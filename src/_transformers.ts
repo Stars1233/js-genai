@@ -576,17 +576,19 @@ function flattenTypeArrayToAnyOf(
   const listWithoutNull = typeList.filter((type) => type !== 'null');
 
   if (listWithoutNull.length === 1) {
-    resultingSchema['type'] = Object.keys(types.Type).includes(
-      listWithoutNull[0].toUpperCase(),
+    resultingSchema['type'] = Object.values(types.Type).includes(
+      listWithoutNull[0].toUpperCase() as types.Type,
     )
-      ? types.Type[listWithoutNull[0].toUpperCase() as keyof typeof types.Type]
+      ? (listWithoutNull[0].toUpperCase() as types.Type)
       : types.Type.TYPE_UNSPECIFIED;
   } else {
     resultingSchema['anyOf'] = [];
     for (const i of listWithoutNull) {
       resultingSchema['anyOf'].push({
-        'type': Object.keys(types.Type).includes(i.toUpperCase())
-          ? types.Type[i.toUpperCase() as keyof typeof types.Type]
+        'type': Object.values(types.Type).includes(
+          i.toUpperCase() as types.Type,
+        )
+          ? (i.toUpperCase() as types.Type)
           : types.Type.TYPE_UNSPECIFIED,
       });
     }
@@ -680,7 +682,7 @@ export function processJsonSchema(
         continue;
       }
       genAISchema['type'] = Object.values(types.Type).includes(
-        fieldValue.toUpperCase(),
+        fieldValue.toUpperCase() as types.Type,
       )
         ? fieldValue.toUpperCase()
         : types.Type.TYPE_UNSPECIFIED;
@@ -1126,7 +1128,9 @@ function filterToJsonSchema(
       filteredSchema[fieldName] = filterDictSchemaField(fieldValue);
     } else if (fieldName === 'type') {
       const typeValue = (fieldValue as string).toUpperCase();
-      filteredSchema[fieldName] = Object.keys(types.Type).includes(typeValue)
+      filteredSchema[fieldName] = Object.values(types.Type).includes(
+        typeValue as types.Type,
+      )
         ? (typeValue as types.Type)
         : types.Type.TYPE_UNSPECIFIED;
     } else if (supportedJsonSchemaFields.has(fieldName)) {

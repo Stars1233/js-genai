@@ -1133,8 +1133,9 @@ export function toolToVertex(
     );
   }
 
-  if (common.getValueByPath(fromObject, ['urlContext']) !== undefined) {
-    throw new Error('urlContext parameter is not supported in Vertex AI.');
+  const fromUrlContext = common.getValueByPath(fromObject, ['urlContext']);
+  if (fromUrlContext != null) {
+    common.setValueByPath(toObject, ['urlContext'], urlContextToVertex());
   }
 
   const fromCodeExecution = common.getValueByPath(fromObject, [
