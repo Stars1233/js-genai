@@ -27,7 +27,7 @@ export class Caches extends BaseModule {
    * @example
    * ```ts
    * const cachedContents = await ai.caches.list({config: {'pageSize': 2}});
-   * for (const cachedContent of cachedContents) {
+   * for await (const cachedContent of cachedContents) {
    *   console.log(cachedContent);
    * }
    * ```

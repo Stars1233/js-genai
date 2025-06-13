@@ -384,9 +384,31 @@ export function functionDeclarationToMldev(
     common.setValueByPath(toObject, ['parameters'], fromParameters);
   }
 
+  const fromParametersJsonSchema = common.getValueByPath(fromObject, [
+    'parametersJsonSchema',
+  ]);
+  if (fromParametersJsonSchema != null) {
+    common.setValueByPath(
+      toObject,
+      ['parametersJsonSchema'],
+      fromParametersJsonSchema,
+    );
+  }
+
   const fromResponse = common.getValueByPath(fromObject, ['response']);
   if (fromResponse != null) {
     common.setValueByPath(toObject, ['response'], fromResponse);
+  }
+
+  const fromResponseJsonSchema = common.getValueByPath(fromObject, [
+    'responseJsonSchema',
+  ]);
+  if (fromResponseJsonSchema != null) {
+    common.setValueByPath(
+      toObject,
+      ['responseJsonSchema'],
+      fromResponseJsonSchema,
+    );
   }
 
   return toObject;
@@ -1615,6 +1637,34 @@ export function imageToMldev(
   return toObject;
 }
 
+export function videoToMldev(
+  apiClient: ApiClient,
+  fromObject: types.Video,
+): Record<string, unknown> {
+  const toObject: Record<string, unknown> = {};
+
+  const fromUri = common.getValueByPath(fromObject, ['uri']);
+  if (fromUri != null) {
+    common.setValueByPath(toObject, ['video', 'uri'], fromUri);
+  }
+
+  const fromVideoBytes = common.getValueByPath(fromObject, ['videoBytes']);
+  if (fromVideoBytes != null) {
+    common.setValueByPath(
+      toObject,
+      ['video', 'encodedVideo'],
+      t.tBytes(apiClient, fromVideoBytes),
+    );
+  }
+
+  const fromMimeType = common.getValueByPath(fromObject, ['mimeType']);
+  if (fromMimeType != null) {
+    common.setValueByPath(toObject, ['encoding'], fromMimeType);
+  }
+
+  return toObject;
+}
+
 export function generateVideosConfigToMldev(
   apiClient: ApiClient,
   fromObject: types.GenerateVideosConfig,
@@ -1710,6 +1760,10 @@ export function generateVideosConfigToMldev(
     throw new Error('generateAudio parameter is not supported in Gemini API.');
   }
 
+  if (common.getValueByPath(fromObject, ['lastFrame']) !== undefined) {
+    throw new Error('lastFrame parameter is not supported in Gemini API.');
+  }
+
   return toObject;
 }
 
@@ -1740,6 +1794,10 @@ export function generateVideosParametersToMldev(
       ['instances[0]', 'image'],
       imageToMldev(apiClient, fromImage),
     );
+  }
+
+  if (common.getValueByPath(fromObject, ['video']) !== undefined) {
+    throw new Error('video parameter is not supported in Gemini API.');
   }
 
   const fromConfig = common.getValueByPath(fromObject, ['config']);
@@ -2130,9 +2188,31 @@ export function functionDeclarationToVertex(
     common.setValueByPath(toObject, ['parameters'], fromParameters);
   }
 
+  const fromParametersJsonSchema = common.getValueByPath(fromObject, [
+    'parametersJsonSchema',
+  ]);
+  if (fromParametersJsonSchema != null) {
+    common.setValueByPath(
+      toObject,
+      ['parametersJsonSchema'],
+      fromParametersJsonSchema,
+    );
+  }
+
   const fromResponse = common.getValueByPath(fromObject, ['response']);
   if (fromResponse != null) {
     common.setValueByPath(toObject, ['response'], fromResponse);
+  }
+
+  const fromResponseJsonSchema = common.getValueByPath(fromObject, [
+    'responseJsonSchema',
+  ]);
+  if (fromResponseJsonSchema != null) {
+    common.setValueByPath(
+      toObject,
+      ['responseJsonSchema'],
+      fromResponseJsonSchema,
+    );
   }
 
   return toObject;
@@ -2381,8 +2461,9 @@ export function toolToVertex(
     );
   }
 
-  if (common.getValueByPath(fromObject, ['urlContext']) !== undefined) {
-    throw new Error('urlContext parameter is not supported in Vertex AI.');
+  const fromUrlContext = common.getValueByPath(fromObject, ['urlContext']);
+  if (fromUrlContext != null) {
+    common.setValueByPath(toObject, ['urlContext'], urlContextToVertex());
   }
 
   const fromCodeExecution = common.getValueByPath(fromObject, [
@@ -3937,6 +4018,34 @@ export function computeTokensParametersToVertex(
   return toObject;
 }
 
+export function videoToVertex(
+  apiClient: ApiClient,
+  fromObject: types.Video,
+): Record<string, unknown> {
+  const toObject: Record<string, unknown> = {};
+
+  const fromUri = common.getValueByPath(fromObject, ['uri']);
+  if (fromUri != null) {
+    common.setValueByPath(toObject, ['gcsUri'], fromUri);
+  }
+
+  const fromVideoBytes = common.getValueByPath(fromObject, ['videoBytes']);
+  if (fromVideoBytes != null) {
+    common.setValueByPath(
+      toObject,
+      ['bytesBase64Encoded'],
+      t.tBytes(apiClient, fromVideoBytes),
+    );
+  }
+
+  const fromMimeType = common.getValueByPath(fromObject, ['mimeType']);
+  if (fromMimeType != null) {
+    common.setValueByPath(toObject, ['mimeType'], fromMimeType);
+  }
+
+  return toObject;
+}
+
 export function generateVideosConfigToVertex(
   apiClient: ApiClient,
   fromObject: types.GenerateVideosConfig,
@@ -4056,6 +4165,15 @@ export function generateVideosConfigToVertex(
     );
   }
 
+  const fromLastFrame = common.getValueByPath(fromObject, ['lastFrame']);
+  if (parentObject !== undefined && fromLastFrame != null) {
+    common.setValueByPath(
+      parentObject,
+      ['instances[0]', 'lastFrame'],
+      imageToVertex(apiClient, fromLastFrame),
+    );
+  }
+
   return toObject;
 }
 
@@ -4085,6 +4203,15 @@ export function generateVideosParametersToVertex(
       toObject,
       ['instances[0]', 'image'],
       imageToVertex(apiClient, fromImage),
+    );
+  }
+
+  const fromVideo = common.getValueByPath(fromObject, ['video']);
+  if (fromVideo != null) {
+    common.setValueByPath(
+      toObject,
+      ['instances[0]', 'video'],
+      videoToVertex(apiClient, fromVideo),
     );
   }
 
@@ -5200,6 +5327,17 @@ export function candidateFromVertex(
   const fromFinishReason = common.getValueByPath(fromObject, ['finishReason']);
   if (fromFinishReason != null) {
     common.setValueByPath(toObject, ['finishReason'], fromFinishReason);
+  }
+
+  const fromUrlContextMetadata = common.getValueByPath(fromObject, [
+    'urlContextMetadata',
+  ]);
+  if (fromUrlContextMetadata != null) {
+    common.setValueByPath(
+      toObject,
+      ['urlContextMetadata'],
+      urlContextMetadataFromVertex(apiClient, fromUrlContextMetadata),
+    );
   }
 
   const fromAvgLogprobs = common.getValueByPath(fromObject, ['avgLogprobs']);

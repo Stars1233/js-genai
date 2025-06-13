@@ -192,6 +192,7 @@ export interface CallableTool {
 // @public
 export interface CallableToolConfig {
     behavior?: Behavior;
+    timeout?: number;
 }
 
 // @public
@@ -989,6 +990,7 @@ export interface GenerateVideosConfig {
     fps?: number;
     generateAudio?: boolean;
     httpOptions?: HttpOptions;
+    lastFrame?: Image_2;
     negativePrompt?: string;
     numberOfVideos?: number;
     outputGcsUri?: string;
@@ -1013,6 +1015,7 @@ export interface GenerateVideosParameters {
     image?: Image_2;
     model: string;
     prompt?: string;
+    video?: Video;
 }
 
 // @public
@@ -2625,9 +2628,16 @@ export interface UsageMetadata {
 // @public
 export interface VertexAISearch {
     datastore?: string;
+    dataStoreSpecs?: VertexAISearchDataStoreSpec[];
     engine?: string;
     filter?: string;
     maxResults?: number;
+}
+
+// @public
+export interface VertexAISearchDataStoreSpec {
+    dataStore?: string;
+    filter?: string;
 }
 
 // @public
@@ -2636,6 +2646,7 @@ export interface VertexRagStore {
     ragResources?: VertexRagStoreRagResource[];
     ragRetrievalConfig?: RagRetrievalConfig;
     similarityTopK?: number;
+    storeContext?: boolean;
     vectorDistanceThreshold?: number;
 }
 
