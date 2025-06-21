@@ -87,7 +87,6 @@ export class Models extends BaseModule {
     let response: types.GenerateContentResponse;
     let functionResponseContent: types.Content;
     const automaticFunctionCallingHistory: types.Content[] = tContents(
-      this.apiClient,
       transformedParams.contents,
     );
     const maxRemoteCalls =
@@ -117,10 +116,7 @@ export class Models extends BaseModule {
         parts: functionResponseParts,
       };
 
-      transformedParams.contents = tContents(
-        this.apiClient,
-        transformedParams.contents,
-      );
+      transformedParams.contents = tContents(transformedParams.contents);
       (transformedParams.contents as types.Content[]).push(responseContent);
       (transformedParams.contents as types.Content[]).push(
         functionResponseContent,
@@ -339,10 +335,9 @@ export class Models extends BaseModule {
             role: 'user',
             parts: functionResponses,
           });
-          const updatedContents = tContents(
-            models.apiClient,
-            params.contents,
-          ).concat(newContents);
+          const updatedContents = tContents(params.contents).concat(
+            newContents,
+          );
 
           params.contents = updatedContents;
         } else {
@@ -555,10 +550,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateContentResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateContentResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateContentResponseFromVertex(apiResponse);
         const typedResp = new types.GenerateContentResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -591,10 +583,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateContentResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateContentResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateContentResponseFromMldev(apiResponse);
         const typedResp = new types.GenerateContentResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -637,7 +626,6 @@ export class Models extends BaseModule {
       ) {
         for await (const chunk of apiResponse) {
           const resp = converters.generateContentResponseFromVertex(
-            apiClient,
             (await chunk.json()) as types.GenerateContentResponse,
           );
           const typedResp = new types.GenerateContentResponse();
@@ -674,7 +662,6 @@ export class Models extends BaseModule {
       ) {
         for await (const chunk of apiResponse) {
           const resp = converters.generateContentResponseFromMldev(
-            apiClient,
             (await chunk.json()) as types.GenerateContentResponse,
           );
           const typedResp = new types.GenerateContentResponse();
@@ -740,10 +727,7 @@ export class Models extends BaseModule {
         }) as Promise<types.EmbedContentResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.embedContentResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.embedContentResponseFromVertex(apiResponse);
         const typedResp = new types.EmbedContentResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -776,10 +760,7 @@ export class Models extends BaseModule {
         }) as Promise<types.EmbedContentResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.embedContentResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.embedContentResponseFromMldev(apiResponse);
         const typedResp = new types.EmbedContentResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -840,10 +821,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateImagesResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateImagesResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateImagesResponseFromVertex(apiResponse);
         const typedResp = new types.GenerateImagesResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -876,10 +854,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateImagesResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateImagesResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateImagesResponseFromMldev(apiResponse);
         const typedResp = new types.GenerateImagesResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -921,10 +896,7 @@ export class Models extends BaseModule {
         }) as Promise<types.EditImageResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.editImageResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.editImageResponseFromVertex(apiResponse);
         const typedResp = new types.EditImageResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -968,10 +940,7 @@ export class Models extends BaseModule {
         }) as Promise<types.UpscaleImageResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.upscaleImageResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.upscaleImageResponseFromVertex(apiResponse);
         const typedResp = new types.UpscaleImageResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -1021,7 +990,7 @@ export class Models extends BaseModule {
         }) as Promise<types.Model>;
 
       return response.then((apiResponse) => {
-        const resp = converters.modelFromVertex(this.apiClient, apiResponse);
+        const resp = converters.modelFromVertex(apiResponse);
 
         return resp as types.Model;
       });
@@ -1050,7 +1019,7 @@ export class Models extends BaseModule {
         }) as Promise<types.Model>;
 
       return response.then((apiResponse) => {
-        const resp = converters.modelFromMldev(this.apiClient, apiResponse);
+        const resp = converters.modelFromMldev(apiResponse);
 
         return resp as types.Model;
       });
@@ -1187,7 +1156,7 @@ export class Models extends BaseModule {
         }) as Promise<types.Model>;
 
       return response.then((apiResponse) => {
-        const resp = converters.modelFromVertex(this.apiClient, apiResponse);
+        const resp = converters.modelFromVertex(apiResponse);
 
         return resp as types.Model;
       });
@@ -1219,7 +1188,7 @@ export class Models extends BaseModule {
         }) as Promise<types.Model>;
 
       return response.then((apiResponse) => {
-        const resp = converters.modelFromMldev(this.apiClient, apiResponse);
+        const resp = converters.modelFromMldev(apiResponse);
 
         return resp as types.Model;
       });
@@ -1362,10 +1331,7 @@ export class Models extends BaseModule {
         }) as Promise<types.CountTokensResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.countTokensResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.countTokensResponseFromVertex(apiResponse);
         const typedResp = new types.CountTokensResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -1398,10 +1364,7 @@ export class Models extends BaseModule {
         }) as Promise<types.CountTokensResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.countTokensResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.countTokensResponseFromMldev(apiResponse);
         const typedResp = new types.CountTokensResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -1461,10 +1424,7 @@ export class Models extends BaseModule {
         }) as Promise<types.ComputeTokensResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.computeTokensResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.computeTokensResponseFromVertex(apiResponse);
         const typedResp = new types.ComputeTokensResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -1532,10 +1492,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateVideosOperation>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateVideosOperationFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateVideosOperationFromVertex(apiResponse);
 
         return resp as types.GenerateVideosOperation;
       });
@@ -1567,10 +1524,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateVideosOperation>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateVideosOperationFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateVideosOperationFromMldev(apiResponse);
 
         return resp as types.GenerateVideosOperation;
       });

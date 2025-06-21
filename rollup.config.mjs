@@ -27,6 +27,7 @@ const externalDeps = [
   'zod-to-json-schema',
   '@modelcontextprotocol/sdk',
   '@modelcontextprotocol/sdk/client/index.js',
+  '@modelcontextprotocol/sdk/types.js',
 ];
 
 export default [

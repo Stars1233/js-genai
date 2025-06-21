@@ -99,7 +99,7 @@ export class Files extends BaseModule {
     return this.apiClient
       .uploadFile(params.file, params.config)
       .then((response) => {
-        const file = converters.fileFromMldev(this.apiClient, response);
+        const file = converters.fileFromMldev(response);
         return file as types.File;
       });
   }
@@ -136,10 +136,7 @@ export class Files extends BaseModule {
         'This method is only supported by the Gemini Developer API.',
       );
     } else {
-      const body = converters.listFilesParametersToMldev(
-        this.apiClient,
-        params,
-      );
+      const body = converters.listFilesParametersToMldev(params);
       path = common.formatMap('files', body['_url'] as Record<string, unknown>);
       queryParams = body['_query'] as Record<string, string>;
       delete body['config'];
@@ -160,10 +157,7 @@ export class Files extends BaseModule {
         }) as Promise<types.ListFilesResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.listFilesResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.listFilesResponseFromMldev(apiResponse);
         const typedResp = new types.ListFilesResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -182,10 +176,7 @@ export class Files extends BaseModule {
         'This method is only supported by the Gemini Developer API.',
       );
     } else {
-      const body = converters.createFileParametersToMldev(
-        this.apiClient,
-        params,
-      );
+      const body = converters.createFileParametersToMldev(params);
       path = common.formatMap(
         'upload/v1beta/files',
         body['_url'] as Record<string, unknown>,
@@ -241,7 +232,7 @@ export class Files extends BaseModule {
         'This method is only supported by the Gemini Developer API.',
       );
     } else {
-      const body = converters.getFileParametersToMldev(this.apiClient, params);
+      const body = converters.getFileParametersToMldev(params);
       path = common.formatMap(
         'files/{file}',
         body['_url'] as Record<string, unknown>,
@@ -265,7 +256,7 @@ export class Files extends BaseModule {
         }) as Promise<types.File>;
 
       return response.then((apiResponse) => {
-        const resp = converters.fileFromMldev(this.apiClient, apiResponse);
+        const resp = converters.fileFromMldev(apiResponse);
 
         return resp as types.File;
       });
@@ -296,10 +287,7 @@ export class Files extends BaseModule {
         'This method is only supported by the Gemini Developer API.',
       );
     } else {
-      const body = converters.deleteFileParametersToMldev(
-        this.apiClient,
-        params,
-      );
+      const body = converters.deleteFileParametersToMldev(params);
       path = common.formatMap(
         'files/{file}',
         body['_url'] as Record<string, unknown>,

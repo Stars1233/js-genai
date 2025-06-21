@@ -34,6 +34,18 @@ export enum AdapterSize {
 }
 
 // @public
+export class ApiError extends Error {
+    constructor(options: ApiErrorInfo);
+    status: number;
+}
+
+// @public
+export interface ApiErrorInfo {
+    message: string;
+    status: number;
+}
+
+// @public
 export interface ApiKeyConfig {
     apiKeyString?: string;
 }
@@ -192,6 +204,7 @@ export interface CallableTool {
 // @public
 export interface CallableToolConfig {
     behavior?: Behavior;
+    timeout?: number;
 }
 
 // @public
@@ -835,7 +848,9 @@ export interface FunctionDeclaration {
     description?: string;
     name?: string;
     parameters?: Schema;
+    parametersJsonSchema?: unknown;
     response?: Schema;
+    responseJsonSchema?: unknown;
 }
 
 // @public
@@ -989,6 +1004,7 @@ export interface GenerateVideosConfig {
     fps?: number;
     generateAudio?: boolean;
     httpOptions?: HttpOptions;
+    lastFrame?: Image_2;
     negativePrompt?: string;
     numberOfVideos?: number;
     outputGcsUri?: string;
@@ -1013,6 +1029,7 @@ export interface GenerateVideosParameters {
     image?: Image_2;
     model: string;
     prompt?: string;
+    video?: Video;
 }
 
 // @public
@@ -1032,6 +1049,7 @@ export interface GenerationConfig {
     mediaResolution?: MediaResolution;
     modelSelectionConfig?: ModelSelectionConfig;
     presencePenalty?: number;
+    responseJsonSchema?: unknown;
     responseLogprobs?: boolean;
     responseMimeType?: string;
     responseModalities?: Modality[];
@@ -1284,6 +1302,7 @@ export enum HarmSeverity {
 export interface HttpOptions {
     apiVersion?: string;
     baseUrl?: string;
+    extraBody?: Record<string, unknown>;
     headers?: Record<string, string>;
     timeout?: number;
 }
@@ -2625,9 +2644,16 @@ export interface UsageMetadata {
 // @public
 export interface VertexAISearch {
     datastore?: string;
+    dataStoreSpecs?: VertexAISearchDataStoreSpec[];
     engine?: string;
     filter?: string;
     maxResults?: number;
+}
+
+// @public
+export interface VertexAISearchDataStoreSpec {
+    dataStore?: string;
+    filter?: string;
 }
 
 // @public
@@ -2636,6 +2662,7 @@ export interface VertexRagStore {
     ragResources?: VertexRagStoreRagResource[];
     ragRetrievalConfig?: RagRetrievalConfig;
     similarityTopK?: number;
+    storeContext?: boolean;
     vectorDistanceThreshold?: number;
 }
 

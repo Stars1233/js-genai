@@ -848,15 +848,8 @@ describe('live', () => {
   });
 
   it('Converters should block bad MimeTypes', async () => {
-    const apiClient = new ApiClient({
-      auth: new FakeAuth(),
-      apiKey: 'test-api-key',
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
-
     expect(() => {
-      converters.liveSendRealtimeInputParametersToMldev(apiClient, {
+      converters.liveSendRealtimeInputParametersToMldev({
         audio: {data: 'AAAA', mimeType: 'image/png'},
       } as types.LiveSendRealtimeInputParameters);
     }).toThrowError(Error, 'Unsupported mime type: image/png');

@@ -161,10 +161,23 @@ export class McpCallableTool implements CallableTool {
     for (const functionCall of functionCalls) {
       if (functionCall.name! in this.functionNameToMcpClient) {
         const mcpClient = this.functionNameToMcpClient[functionCall.name!];
-        const callToolResponse = await mcpClient.callTool({
-          name: functionCall.name!,
-          arguments: functionCall.args,
-        });
+        let requestOptions = undefined;
+        // TODO: b/424238654 - Add support for finer grained timeout control.
+        if (this.config.timeout) {
+          requestOptions = {
+            timeout: this.config.timeout,
+          };
+        }
+        const callToolResponse = await mcpClient.callTool(
+          {
+            name: functionCall.name!,
+            arguments: functionCall.args,
+          },
+          // Set the result schema to undefined to allow MCP to rely on the
+          // default schema.
+          undefined,
+          requestOptions,
+        );
         functionCallResponseParts.push({
           functionResponse: {
             name: functionCall.name,

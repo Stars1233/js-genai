@@ -887,4 +887,50 @@ describe('generateContent', () => {
       ),
     );
   });
+
+  it('should set timeout', async () => {
+    const client = new GoogleGenAI({vertexai: false, apiKey: 'fake-api-key'});
+    const mcpClient = await spinUpBeepingServer();
+    const callableTool = mcpToTool(mcpClient, {
+      timeout: 1, // Set artificially low timeout to test.
+    });
+    const expectedNumberOfCalls = 3;
+    const mockResponses = [];
+    for (let i = 0; i < 20; i++) {
+      mockResponses.push(
+        Promise.resolve(
+          new Response(
+            JSON.stringify(mockGenerateContentResponseWithSingleFunctionCall),
+            fetchOkOptions,
+          ),
+        ),
+      );
+    }
+
+    const fetchSpy = spyOn(global, 'fetch').and.returnValues(...mockResponses);
+    const consoleBeepSpy = spyOn(process.stdout, 'write').and.callThrough();
+    const callToolSpy = spyOn(mcpClient, 'callTool').and.callThrough();
+    await client.models.generateContent({
+      model: 'gemini-1.5-flash-exp',
+      contents: 'Call the printing tool.',
+      config: {
+        tools: [callableTool],
+        toolConfig: {
+          functionCallingConfig: {
+            mode: types.FunctionCallingConfigMode.ANY,
+          },
+        },
+        automaticFunctionCalling: {
+          maximumRemoteCalls: 3,
+        },
+      },
+    });
+    expect(fetchSpy).toHaveBeenCalledTimes(expectedNumberOfCalls);
+    expect(consoleBeepSpy).toHaveBeenCalledTimes(expectedNumberOfCalls);
+    const requestOptions = callToolSpy.calls.allArgs()[0][2] as Record<
+      string,
+      unknown
+    >;
+    expect(requestOptions['timeout']).toEqual(1);
+  });
 });

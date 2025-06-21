@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {Tool as McpTool} from '@modelcontextprotocol/sdk/types.js';
+import type {Tool as McpTool} from '@modelcontextprotocol/sdk/types.js';
 import {z} from 'zod';
 
 import {ApiClient} from './_api_client.js';
@@ -57,20 +57,16 @@ export function tCachesModel(
 }
 
 export function tBlobs(
-  apiClient: ApiClient,
   blobs: types.BlobImageUnion | types.BlobImageUnion[],
 ): types.Blob[] {
   if (Array.isArray(blobs)) {
-    return blobs.map((blob) => tBlob(apiClient, blob));
+    return blobs.map((blob) => tBlob(blob));
   } else {
-    return [tBlob(apiClient, blobs)];
+    return [tBlob(blobs)];
   }
 }
 
-export function tBlob(
-  apiClient: ApiClient,
-  blob: types.BlobImageUnion,
-): types.Blob {
+export function tBlob(blob: types.BlobImageUnion): types.Blob {
   if (typeof blob === 'object' && blob !== null) {
     return blob;
   }
@@ -80,11 +76,8 @@ export function tBlob(
   );
 }
 
-export function tImageBlob(
-  apiClient: ApiClient,
-  blob: types.BlobImageUnion,
-): types.Blob {
-  const transformedBlob = tBlob(apiClient, blob);
+export function tImageBlob(blob: types.BlobImageUnion): types.Blob {
+  const transformedBlob = tBlob(blob);
   if (
     transformedBlob.mimeType &&
     transformedBlob.mimeType.startsWith('image/')
@@ -94,8 +87,8 @@ export function tImageBlob(
   throw new Error(`Unsupported mime type: ${transformedBlob.mimeType!}`);
 }
 
-export function tAudioBlob(apiClient: ApiClient, blob: types.Blob): types.Blob {
-  const transformedBlob = tBlob(apiClient, blob);
+export function tAudioBlob(blob: types.Blob): types.Blob {
+  const transformedBlob = tBlob(blob);
   if (
     transformedBlob.mimeType &&
     transformedBlob.mimeType.startsWith('audio/')
@@ -105,10 +98,7 @@ export function tAudioBlob(apiClient: ApiClient, blob: types.Blob): types.Blob {
   throw new Error(`Unsupported mime type: ${transformedBlob.mimeType!}`);
 }
 
-export function tPart(
-  apiClient: ApiClient,
-  origin?: types.PartUnion | null,
-): types.Part {
+export function tPart(origin?: types.PartUnion | null): types.Part {
   if (origin === null || origin === undefined) {
     throw new Error('PartUnion is required');
   }
@@ -121,10 +111,7 @@ export function tPart(
   throw new Error(`Unsupported part type: ${typeof origin}`);
 }
 
-export function tParts(
-  apiClient: ApiClient,
-  origin?: types.PartListUnion | null,
-): types.Part[] {
+export function tParts(origin?: types.PartListUnion | null): types.Part[] {
   if (
     origin === null ||
     origin === undefined ||
@@ -133,9 +120,9 @@ export function tParts(
     throw new Error('PartListUnion is required');
   }
   if (Array.isArray(origin)) {
-    return origin.map((item) => tPart(apiClient, item as types.PartUnion)!);
+    return origin.map((item) => tPart(item as types.PartUnion)!);
   }
-  return [tPart(apiClient, origin)!];
+  return [tPart(origin)!];
 }
 
 function _isContent(origin: unknown): boolean {
@@ -166,10 +153,7 @@ function _isFunctionResponsePart(origin: unknown): boolean {
   );
 }
 
-export function tContent(
-  apiClient: ApiClient,
-  origin?: types.ContentUnion,
-): types.Content {
+export function tContent(origin?: types.ContentUnion): types.Content {
   if (origin === null || origin === undefined) {
     throw new Error('ContentUnion is required');
   }
@@ -181,7 +165,7 @@ export function tContent(
 
   return {
     role: 'user',
-    parts: tParts(apiClient, origin as types.PartListUnion)!,
+    parts: tParts(origin as types.PartListUnion)!,
   };
 }
 
@@ -194,7 +178,7 @@ export function tContentsForEmbed(
   }
   if (apiClient.isVertexAI() && Array.isArray(origin)) {
     return origin.flatMap((item) => {
-      const content = tContent(apiClient, item as types.ContentUnion);
+      const content = tContent(item as types.ContentUnion);
       if (
         content.parts &&
         content.parts.length > 0 &&
@@ -205,7 +189,7 @@ export function tContentsForEmbed(
       return [];
     });
   } else if (apiClient.isVertexAI()) {
-    const content = tContent(apiClient, origin as types.ContentUnion);
+    const content = tContent(origin as types.ContentUnion);
     if (
       content.parts &&
       content.parts.length > 0 &&
@@ -216,17 +200,12 @@ export function tContentsForEmbed(
     return [];
   }
   if (Array.isArray(origin)) {
-    return origin.map(
-      (item) => tContent(apiClient, item as types.ContentUnion)!,
-    );
+    return origin.map((item) => tContent(item as types.ContentUnion)!);
   }
-  return [tContent(apiClient, origin as types.ContentUnion)!];
+  return [tContent(origin as types.ContentUnion)!];
 }
 
-export function tContents(
-  apiClient: ApiClient,
-  origin?: types.ContentListUnion,
-): types.Content[] {
+export function tContents(origin?: types.ContentListUnion): types.Content[] {
   if (
     origin === null ||
     origin === undefined ||
@@ -241,7 +220,7 @@ export function tContents(
         'To specify functionCall or functionResponse parts, please wrap them in a Content object, specifying the role for them',
       );
     }
-    return [tContent(apiClient, origin as types.ContentUnion)];
+    return [tContent(origin as types.ContentUnion)];
   }
 
   const result: types.Content[] = [];
@@ -271,7 +250,7 @@ export function tContents(
   }
 
   if (!isContentArray) {
-    result.push({role: 'user', parts: tParts(apiClient, accumulatedParts)});
+    result.push({role: 'user', parts: tParts(accumulatedParts)});
   }
   return result;
 }
@@ -576,17 +555,19 @@ function flattenTypeArrayToAnyOf(
   const listWithoutNull = typeList.filter((type) => type !== 'null');
 
   if (listWithoutNull.length === 1) {
-    resultingSchema['type'] = Object.keys(types.Type).includes(
-      listWithoutNull[0].toUpperCase(),
+    resultingSchema['type'] = Object.values(types.Type).includes(
+      listWithoutNull[0].toUpperCase() as types.Type,
     )
-      ? types.Type[listWithoutNull[0].toUpperCase() as keyof typeof types.Type]
+      ? (listWithoutNull[0].toUpperCase() as types.Type)
       : types.Type.TYPE_UNSPECIFIED;
   } else {
     resultingSchema['anyOf'] = [];
     for (const i of listWithoutNull) {
       resultingSchema['anyOf'].push({
-        'type': Object.keys(types.Type).includes(i.toUpperCase())
-          ? types.Type[i.toUpperCase() as keyof typeof types.Type]
+        'type': Object.values(types.Type).includes(
+          i.toUpperCase() as types.Type,
+        )
+          ? (i.toUpperCase() as types.Type)
           : types.Type.TYPE_UNSPECIFIED,
       });
     }
@@ -680,7 +661,7 @@ export function processJsonSchema(
         continue;
       }
       genAISchema['type'] = Object.values(types.Type).includes(
-        fieldValue.toUpperCase(),
+        fieldValue.toUpperCase() as types.Type,
       )
         ? fieldValue.toUpperCase()
         : types.Type.TYPE_UNSPECIFIED;
@@ -725,10 +706,7 @@ export function processJsonSchema(
 // https://github.com/StefanTerdell/zod-to-json-schema/blob/70525efe555cd226691e093d171370a3b10921d1/src/zodToJsonSchema.ts#L7
 // typebox can return unknown, see details in
 // https://github.com/sinclairzx81/typebox/blob/5a5431439f7d5ca6b494d0d18fbfd7b1a356d67c/src/type/create/type.ts#L35
-export function tSchema(
-  apiClient: ApiClient,
-  schema: types.Schema | unknown,
-): types.Schema {
+export function tSchema(schema: types.Schema | unknown): types.Schema {
   if (Object.keys(schema as Record<string, unknown>).includes('$schema')) {
     delete (schema as Record<string, unknown>)['$schema'];
     const validatedJsonSchema = createJsonSchemaValidator().parse(schema);
@@ -739,7 +717,6 @@ export function tSchema(
 }
 
 export function tSpeechConfig(
-  apiClient: ApiClient,
   speechConfig: types.SpeechConfigUnion,
 ): types.SpeechConfig {
   if (typeof speechConfig === 'object') {
@@ -758,7 +735,6 @@ export function tSpeechConfig(
 }
 
 export function tLiveSpeechConfig(
-  apiClient: ApiClient,
   speechConfig: types.SpeechConfig | object,
 ): types.SpeechConfig {
   if ('multiSpeakerVoiceConfig' in speechConfig) {
@@ -769,30 +745,23 @@ export function tLiveSpeechConfig(
   return speechConfig;
 }
 
-export function tTool(apiClient: ApiClient, tool: types.Tool): types.Tool {
+export function tTool(tool: types.Tool): types.Tool {
   if (tool.functionDeclarations) {
     for (const functionDeclaration of tool.functionDeclarations) {
       if (functionDeclaration.parameters) {
         functionDeclaration.parameters = tSchema(
-          apiClient,
           functionDeclaration.parameters,
         );
       }
       if (functionDeclaration.response) {
-        functionDeclaration.response = tSchema(
-          apiClient,
-          functionDeclaration.response,
-        );
+        functionDeclaration.response = tSchema(functionDeclaration.response);
       }
     }
   }
   return tool;
 }
 
-export function tTools(
-  apiClient: ApiClient,
-  tools: types.ToolListUnion | unknown,
-): types.Tool[] {
+export function tTools(tools: types.ToolListUnion | unknown): types.Tool[] {
   // Check if the incoming type is defined.
   if (tools === undefined || tools === null) {
     throw new Error('tools is required');
@@ -897,10 +866,7 @@ export function tCachedContentName(
   return resourceName(apiClient, name, 'cachedContents');
 }
 
-export function tTuningJobStatus(
-  apiClient: ApiClient,
-  status: string | unknown,
-): string {
+export function tTuningJobStatus(status: string | unknown): string {
   switch (status) {
     case 'STATE_UNSPECIFIED':
       return 'JOB_STATE_UNSPECIFIED';
@@ -915,10 +881,7 @@ export function tTuningJobStatus(
   }
 }
 
-export function tBytes(
-  apiClient: ApiClient,
-  fromImageBytes: string | unknown,
-): string {
+export function tBytes(fromImageBytes: string | unknown): string {
   if (typeof fromImageBytes !== 'string') {
     throw new Error('fromImageBytes must be a string');
   }
@@ -954,7 +917,6 @@ export function isVideo(origin: unknown): boolean {
 }
 
 export function tFileName(
-  apiClient: ApiClient,
   fromName: string | types.File | types.GeneratedVideo | types.Video,
 ): string | undefined {
   let name: string | undefined;
@@ -1008,10 +970,7 @@ export function tModelsUrl(
   return res;
 }
 
-export function tExtractModels(
-  apiClient: ApiClient,
-  response: unknown,
-): Record<string, unknown>[] {
+export function tExtractModels(response: unknown): Record<string, unknown>[] {
   for (const key of ['models', 'tunedModels', 'publisherModels']) {
     if (hasField(response, key)) {
       return (response as Record<string, unknown>)[key] as Record<
@@ -1126,7 +1085,9 @@ function filterToJsonSchema(
       filteredSchema[fieldName] = filterDictSchemaField(fieldValue);
     } else if (fieldName === 'type') {
       const typeValue = (fieldValue as string).toUpperCase();
-      filteredSchema[fieldName] = Object.keys(types.Type).includes(typeValue)
+      filteredSchema[fieldName] = Object.values(types.Type).includes(
+        typeValue as types.Type,
+      )
         ? (typeValue as types.Type)
         : types.Type.TYPE_UNSPECIFIED;
     } else if (supportedJsonSchemaFields.has(fieldName)) {
