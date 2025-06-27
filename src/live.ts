@@ -45,17 +45,22 @@ async function handleWebSocketMessage(
   event: MessageEvent,
 ): Promise<void> {
   const serverMessage: types.LiveServerMessage = new types.LiveServerMessage();
-  let data: types.LiveServerMessage;
+  let jsonData: string;
   if (event.data instanceof Blob) {
-    data = JSON.parse(await event.data.text()) as types.LiveServerMessage;
+    jsonData = await event.data.text();
+  } else if (event.data instanceof ArrayBuffer) {
+    jsonData = new TextDecoder().decode(event.data);
   } else {
-    data = JSON.parse(event.data) as types.LiveServerMessage;
+    jsonData = event.data;
   }
+
+  const data = JSON.parse(jsonData) as types.LiveServerMessage;
+
   if (apiClient.isVertexAI()) {
-    const resp = converters.liveServerMessageFromVertex(apiClient, data);
+    const resp = converters.liveServerMessageFromVertex(data);
     Object.assign(serverMessage, resp);
   } else {
-    const resp = converters.liveServerMessageFromMldev(apiClient, data);
+    const resp = converters.liveServerMessageFromMldev(data);
     Object.assign(serverMessage, resp);
   }
 
@@ -294,14 +299,11 @@ export class Session {
     if (params.turns !== null && params.turns !== undefined) {
       let contents: types.Content[] = [];
       try {
-        contents = t.tContents(
-          apiClient,
-          params.turns as types.ContentListUnion,
-        );
+        contents = t.tContents(params.turns as types.ContentListUnion);
         if (apiClient.isVertexAI()) {
-          contents = contents.map((item) => contentToVertex(apiClient, item));
+          contents = contents.map((item) => contentToVertex(item));
         } else {
-          contents = contents.map((item) => contentToMldev(apiClient, item));
+          contents = contents.map((item) => contentToMldev(item));
         }
       } catch {
         throw new Error(
@@ -449,17 +451,13 @@ export class Session {
 
     if (this.apiClient.isVertexAI()) {
       clientMessage = {
-        'realtimeInput': converters.liveSendRealtimeInputParametersToVertex(
-          this.apiClient,
-          params,
-        ),
+        'realtimeInput':
+          converters.liveSendRealtimeInputParametersToVertex(params),
       };
     } else {
       clientMessage = {
-        'realtimeInput': converters.liveSendRealtimeInputParametersToMldev(
-          this.apiClient,
-          params,
-        ),
+        'realtimeInput':
+          converters.liveSendRealtimeInputParametersToMldev(params),
       };
     }
     this.conn.send(JSON.stringify(clientMessage));

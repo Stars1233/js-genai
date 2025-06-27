@@ -34,6 +34,18 @@ export enum AdapterSize {
 }
 
 // @public
+export class ApiError extends Error {
+    constructor(options: ApiErrorInfo);
+    status: number;
+}
+
+// @public
+export interface ApiErrorInfo {
+    message: string;
+    status: number;
+}
+
+// @public
 export interface ApiKeyConfig {
     apiKeyString?: string;
 }
@@ -122,6 +134,55 @@ export interface BaseUrlParameters {
     vertexUrl?: string;
 }
 
+// Warning: (ae-forgotten-export) The symbol "BaseModule" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export class Batches extends BaseModule {
+    // Warning: (ae-forgotten-export) The symbol "ApiClient" needs to be exported by the entry point index.d.ts
+    constructor(apiClient: ApiClient);
+    cancel(params: types.CancelBatchJobParameters): Promise<void>;
+    // Warning: (ae-forgotten-export) The symbol "types" needs to be exported by the entry point index.d.ts
+    create: (params: types.CreateBatchJobParameters) => Promise<types.BatchJob>;
+    get(params: types.GetBatchJobParameters): Promise<types.BatchJob>;
+    list: (params?: types.ListBatchJobsParameters) => Promise<Pager<types.BatchJob>>;
+}
+
+// @public
+export interface BatchJob {
+    createTime?: string;
+    dest?: BatchJobDestination;
+    displayName?: string;
+    endTime?: string;
+    error?: JobError;
+    model?: string;
+    name?: string;
+    src?: BatchJobSource;
+    startTime?: string;
+    state?: JobState;
+    updateTime?: string;
+}
+
+// @public
+export interface BatchJobDestination {
+    bigqueryUri?: string;
+    fileName?: string;
+    format?: string;
+    gcsUri?: string;
+    inlinedResponses?: InlinedResponse[];
+}
+
+// @public
+export interface BatchJobSource {
+    bigqueryUri?: string;
+    fileName?: string;
+    format?: string;
+    gcsUri?: string[];
+    inlinedRequests?: InlinedRequest[];
+}
+
+// @public (undocumented)
+export type BatchJobSourceUnion = BatchJobSource | InlinedRequest[] | string;
+
 // @public
 export enum Behavior {
     BLOCKING = "BLOCKING",
@@ -169,16 +230,12 @@ export interface CachedContentUsageMetadata {
     videoDurationSeconds?: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "BaseModule" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export class Caches extends BaseModule {
-    // Warning: (ae-forgotten-export) The symbol "ApiClient" needs to be exported by the entry point index.d.ts
     constructor(apiClient: ApiClient);
     create(params: types.CreateCachedContentParameters): Promise<types.CachedContent>;
     delete(params: types.DeleteCachedContentParameters): Promise<types.DeleteCachedContentResponse>;
     get(params: types.GetCachedContentParameters): Promise<types.CachedContent>;
-    // Warning: (ae-forgotten-export) The symbol "types" needs to be exported by the entry point index.d.ts
     list: (params?: types.ListCachedContentsParameters) => Promise<Pager<types.CachedContent>>;
     update(params: types.UpdateCachedContentParameters): Promise<types.CachedContent>;
 }
@@ -192,6 +249,19 @@ export interface CallableTool {
 // @public
 export interface CallableToolConfig {
     behavior?: Behavior;
+    timeout?: number;
+}
+
+// @public
+export interface CancelBatchJobConfig {
+    abortSignal?: AbortSignal;
+    httpOptions?: HttpOptions;
+}
+
+// @public
+export interface CancelBatchJobParameters {
+    config?: CancelBatchJobConfig;
+    name: string;
 }
 
 // @public
@@ -363,6 +433,21 @@ export interface CreateAuthTokenConfig {
 // @public
 export interface CreateAuthTokenParameters {
     config?: CreateAuthTokenConfig;
+}
+
+// @public
+export interface CreateBatchJobConfig {
+    abortSignal?: AbortSignal;
+    dest?: string;
+    displayName?: string;
+    httpOptions?: HttpOptions;
+}
+
+// @public
+export interface CreateBatchJobParameters {
+    config?: CreateBatchJobConfig;
+    model?: string;
+    src: BatchJobSourceUnion;
 }
 
 // @public
@@ -835,7 +920,9 @@ export interface FunctionDeclaration {
     description?: string;
     name?: string;
     parameters?: Schema;
+    parametersJsonSchema?: unknown;
     response?: Schema;
+    responseJsonSchema?: unknown;
 }
 
 // @public
@@ -870,6 +957,7 @@ export interface GenerateContentConfig {
     mediaResolution?: MediaResolution;
     modelSelectionConfig?: ModelSelectionConfig;
     presencePenalty?: number;
+    responseJsonSchema?: unknown;
     responseLogprobs?: boolean;
     responseMimeType?: string;
     responseModalities?: string[];
@@ -984,11 +1072,13 @@ export class GenerateImagesResponse {
 export interface GenerateVideosConfig {
     abortSignal?: AbortSignal;
     aspectRatio?: string;
+    compressionQuality?: VideoCompressionQuality;
     durationSeconds?: number;
     enhancePrompt?: boolean;
     fps?: number;
     generateAudio?: boolean;
     httpOptions?: HttpOptions;
+    lastFrame?: Image_2;
     negativePrompt?: string;
     numberOfVideos?: number;
     outputGcsUri?: string;
@@ -1013,6 +1103,7 @@ export interface GenerateVideosParameters {
     image?: Image_2;
     model: string;
     prompt?: string;
+    video?: Video;
 }
 
 // @public
@@ -1032,6 +1123,7 @@ export interface GenerationConfig {
     mediaResolution?: MediaResolution;
     modelSelectionConfig?: ModelSelectionConfig;
     presencePenalty?: number;
+    responseJsonSchema?: unknown;
     responseLogprobs?: boolean;
     responseMimeType?: string;
     responseModalities?: Modality[];
@@ -1066,6 +1158,18 @@ export interface GenerationConfigRoutingConfigManualRoutingMode {
 export interface GenerationConfigThinkingConfig {
     includeThoughts?: boolean;
     thinkingBudget?: number;
+}
+
+// @public
+export interface GetBatchJobConfig {
+    abortSignal?: AbortSignal;
+    httpOptions?: HttpOptions;
+}
+
+// @public
+export interface GetBatchJobParameters {
+    config?: GetBatchJobConfig;
+    name: string;
 }
 
 // @public
@@ -1137,6 +1241,8 @@ export class GoogleGenAI {
     protected readonly apiClient: ApiClient;
     // (undocumented)
     readonly authTokens: Tokens;
+    // (undocumented)
+    readonly batches: Batches;
     // (undocumented)
     readonly caches: Caches;
     // (undocumented)
@@ -1284,6 +1390,7 @@ export enum HarmSeverity {
 export interface HttpOptions {
     apiVersion?: string;
     baseUrl?: string;
+    extraBody?: Record<string, unknown>;
     headers?: Record<string, string>;
     timeout?: number;
 }
@@ -1320,9 +1427,29 @@ export enum ImagePromptLanguage {
 }
 
 // @public
+export interface InlinedRequest {
+    config?: GenerateContentConfig;
+    contents?: ContentListUnion;
+    model?: string;
+}
+
+// @public
+export class InlinedResponse {
+    error?: JobError;
+    response?: GenerateContentResponse;
+}
+
+// @public
 export interface Interval {
     endTime?: string;
     startTime?: string;
+}
+
+// @public
+export interface JobError {
+    code?: number;
+    details?: string[];
+    message?: string;
 }
 
 // @public
@@ -1351,6 +1478,32 @@ export enum Language {
 export interface LatLng {
     latitude?: number;
     longitude?: number;
+}
+
+// @public
+export interface ListBatchJobsConfig {
+    abortSignal?: AbortSignal;
+    // (undocumented)
+    filter?: string;
+    httpOptions?: HttpOptions;
+    // (undocumented)
+    pageSize?: number;
+    // (undocumented)
+    pageToken?: string;
+}
+
+// @public
+export interface ListBatchJobsParameters {
+    // (undocumented)
+    config?: ListBatchJobsConfig;
+}
+
+// @public
+export class ListBatchJobsResponse {
+    // (undocumented)
+    batchJobs?: BatchJob[];
+    // (undocumented)
+    nextPageToken?: string;
 }
 
 // @public
@@ -1957,11 +2110,8 @@ export type PartUnion = Part | string;
 
 // @public
 export enum PersonGeneration {
-    // (undocumented)
     ALLOW_ADULT = "ALLOW_ADULT",
-    // (undocumented)
     ALLOW_ALL = "ALLOW_ALL",
-    // (undocumented)
     DONT_ALLOW = "DONT_ALLOW"
 }
 
@@ -2566,7 +2716,9 @@ export interface UploadFileParameters {
 // @public
 export interface UpscaleImageConfig {
     abortSignal?: AbortSignal;
+    enhanceInputImage?: boolean;
     httpOptions?: HttpOptions;
+    imagePreservationFactor?: number;
     includeRaiReason?: boolean;
     outputCompressionQuality?: number;
     outputMimeType?: string;
@@ -2625,9 +2777,16 @@ export interface UsageMetadata {
 // @public
 export interface VertexAISearch {
     datastore?: string;
+    dataStoreSpecs?: VertexAISearchDataStoreSpec[];
     engine?: string;
     filter?: string;
     maxResults?: number;
+}
+
+// @public
+export interface VertexAISearchDataStoreSpec {
+    dataStore?: string;
+    filter?: string;
 }
 
 // @public
@@ -2636,6 +2795,7 @@ export interface VertexRagStore {
     ragResources?: VertexRagStoreRagResource[];
     ragRetrievalConfig?: RagRetrievalConfig;
     similarityTopK?: number;
+    storeContext?: boolean;
     vectorDistanceThreshold?: number;
 }
 
@@ -2650,6 +2810,12 @@ export interface Video {
     mimeType?: string;
     uri?: string;
     videoBytes?: string;
+}
+
+// @public
+export enum VideoCompressionQuality {
+    LOSSLESS = "LOSSLESS",
+    OPTIMIZED = "OPTIMIZED"
 }
 
 // @public

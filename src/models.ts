@@ -87,7 +87,6 @@ export class Models extends BaseModule {
     let response: types.GenerateContentResponse;
     let functionResponseContent: types.Content;
     const automaticFunctionCallingHistory: types.Content[] = tContents(
-      this.apiClient,
       transformedParams.contents,
     );
     const maxRemoteCalls =
@@ -117,10 +116,7 @@ export class Models extends BaseModule {
         parts: functionResponseParts,
       };
 
-      transformedParams.contents = tContents(
-        this.apiClient,
-        transformedParams.contents,
-      );
+      transformedParams.contents = tContents(transformedParams.contents);
       (transformedParams.contents as types.Content[]).push(responseContent);
       (transformedParams.contents as types.Content[]).push(
         functionResponseContent,
@@ -339,10 +335,9 @@ export class Models extends BaseModule {
             role: 'user',
             parts: functionResponses,
           });
-          const updatedContents = tContents(
-            models.apiClient,
-            params.contents,
-          ).concat(newContents);
+          const updatedContents = tContents(params.contents).concat(
+            newContents,
+          );
 
           params.contents = updatedContents;
         } else {
@@ -525,6 +520,7 @@ export class Models extends BaseModule {
     params: types.GenerateContentParameters,
   ): Promise<types.GenerateContentResponse> {
     let response: Promise<types.GenerateContentResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -555,10 +551,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateContentResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateContentResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateContentResponseFromVertex(apiResponse);
         const typedResp = new types.GenerateContentResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -591,10 +584,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateContentResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateContentResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateContentResponseFromMldev(apiResponse);
         const typedResp = new types.GenerateContentResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -606,6 +596,7 @@ export class Models extends BaseModule {
     params: types.GenerateContentParameters,
   ): Promise<AsyncGenerator<types.GenerateContentResponse>> {
     let response: Promise<AsyncGenerator<types.HttpResponse>>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -637,7 +628,6 @@ export class Models extends BaseModule {
       ) {
         for await (const chunk of apiResponse) {
           const resp = converters.generateContentResponseFromVertex(
-            apiClient,
             (await chunk.json()) as types.GenerateContentResponse,
           );
           const typedResp = new types.GenerateContentResponse();
@@ -674,7 +664,6 @@ export class Models extends BaseModule {
       ) {
         for await (const chunk of apiResponse) {
           const resp = converters.generateContentResponseFromMldev(
-            apiClient,
             (await chunk.json()) as types.GenerateContentResponse,
           );
           const typedResp = new types.GenerateContentResponse();
@@ -710,6 +699,7 @@ export class Models extends BaseModule {
     params: types.EmbedContentParameters,
   ): Promise<types.EmbedContentResponse> {
     let response: Promise<types.EmbedContentResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -740,10 +730,7 @@ export class Models extends BaseModule {
         }) as Promise<types.EmbedContentResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.embedContentResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.embedContentResponseFromVertex(apiResponse);
         const typedResp = new types.EmbedContentResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -776,10 +763,7 @@ export class Models extends BaseModule {
         }) as Promise<types.EmbedContentResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.embedContentResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.embedContentResponseFromMldev(apiResponse);
         const typedResp = new types.EmbedContentResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -810,6 +794,7 @@ export class Models extends BaseModule {
     params: types.GenerateImagesParameters,
   ): Promise<types.GenerateImagesResponse> {
     let response: Promise<types.GenerateImagesResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -840,10 +825,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateImagesResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateImagesResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateImagesResponseFromVertex(apiResponse);
         const typedResp = new types.GenerateImagesResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -876,10 +858,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateImagesResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateImagesResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateImagesResponseFromMldev(apiResponse);
         const typedResp = new types.GenerateImagesResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -891,6 +870,7 @@ export class Models extends BaseModule {
     params: _internal_types.EditImageParametersInternal,
   ): Promise<types.EditImageResponse> {
     let response: Promise<types.EditImageResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -921,10 +901,7 @@ export class Models extends BaseModule {
         }) as Promise<types.EditImageResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.editImageResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.editImageResponseFromVertex(apiResponse);
         const typedResp = new types.EditImageResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -938,6 +915,7 @@ export class Models extends BaseModule {
     params: _internal_types.UpscaleImageAPIParametersInternal,
   ): Promise<types.UpscaleImageResponse> {
     let response: Promise<types.UpscaleImageResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -968,10 +946,7 @@ export class Models extends BaseModule {
         }) as Promise<types.UpscaleImageResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.upscaleImageResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.upscaleImageResponseFromVertex(apiResponse);
         const typedResp = new types.UpscaleImageResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -991,6 +966,7 @@ export class Models extends BaseModule {
    */
   async get(params: types.GetModelParameters): Promise<types.Model> {
     let response: Promise<types.Model>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -1021,7 +997,7 @@ export class Models extends BaseModule {
         }) as Promise<types.Model>;
 
       return response.then((apiResponse) => {
-        const resp = converters.modelFromVertex(this.apiClient, apiResponse);
+        const resp = converters.modelFromVertex(apiResponse);
 
         return resp as types.Model;
       });
@@ -1050,7 +1026,7 @@ export class Models extends BaseModule {
         }) as Promise<types.Model>;
 
       return response.then((apiResponse) => {
-        const resp = converters.modelFromMldev(this.apiClient, apiResponse);
+        const resp = converters.modelFromMldev(apiResponse);
 
         return resp as types.Model;
       });
@@ -1061,6 +1037,7 @@ export class Models extends BaseModule {
     params: types.ListModelsParameters,
   ): Promise<types.ListModelsResponse> {
     let response: Promise<types.ListModelsResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -1157,6 +1134,7 @@ export class Models extends BaseModule {
    */
   async update(params: types.UpdateModelParameters): Promise<types.Model> {
     let response: Promise<types.Model>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -1187,7 +1165,7 @@ export class Models extends BaseModule {
         }) as Promise<types.Model>;
 
       return response.then((apiResponse) => {
-        const resp = converters.modelFromVertex(this.apiClient, apiResponse);
+        const resp = converters.modelFromVertex(apiResponse);
 
         return resp as types.Model;
       });
@@ -1219,7 +1197,7 @@ export class Models extends BaseModule {
         }) as Promise<types.Model>;
 
       return response.then((apiResponse) => {
-        const resp = converters.modelFromMldev(this.apiClient, apiResponse);
+        const resp = converters.modelFromMldev(apiResponse);
 
         return resp as types.Model;
       });
@@ -1241,6 +1219,7 @@ export class Models extends BaseModule {
     params: types.DeleteModelParameters,
   ): Promise<types.DeleteModelResponse> {
     let response: Promise<types.DeleteModelResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -1332,6 +1311,7 @@ export class Models extends BaseModule {
     params: types.CountTokensParameters,
   ): Promise<types.CountTokensResponse> {
     let response: Promise<types.CountTokensResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -1362,10 +1342,7 @@ export class Models extends BaseModule {
         }) as Promise<types.CountTokensResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.countTokensResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.countTokensResponseFromVertex(apiResponse);
         const typedResp = new types.CountTokensResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -1398,10 +1375,7 @@ export class Models extends BaseModule {
         }) as Promise<types.CountTokensResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.countTokensResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.countTokensResponseFromMldev(apiResponse);
         const typedResp = new types.CountTokensResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -1431,6 +1405,7 @@ export class Models extends BaseModule {
     params: types.ComputeTokensParameters,
   ): Promise<types.ComputeTokensResponse> {
     let response: Promise<types.ComputeTokensResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -1461,10 +1436,7 @@ export class Models extends BaseModule {
         }) as Promise<types.ComputeTokensResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.computeTokensResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.computeTokensResponseFromVertex(apiResponse);
         const typedResp = new types.ComputeTokensResponse();
         Object.assign(typedResp, resp);
         return typedResp;
@@ -1502,6 +1474,7 @@ export class Models extends BaseModule {
     params: types.GenerateVideosParameters,
   ): Promise<types.GenerateVideosOperation> {
     let response: Promise<types.GenerateVideosOperation>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -1532,10 +1505,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateVideosOperation>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateVideosOperationFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateVideosOperationFromVertex(apiResponse);
 
         return resp as types.GenerateVideosOperation;
       });
@@ -1567,10 +1537,7 @@ export class Models extends BaseModule {
         }) as Promise<types.GenerateVideosOperation>;
 
       return response.then((apiResponse) => {
-        const resp = converters.generateVideosOperationFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.generateVideosOperationFromMldev(apiResponse);
 
         return resp as types.GenerateVideosOperation;
       });

@@ -27,7 +27,7 @@ export class Caches extends BaseModule {
    * @example
    * ```ts
    * const cachedContents = await ai.caches.list({config: {'pageSize': 2}});
-   * for (const cachedContent of cachedContents) {
+   * for await (const cachedContent of cachedContents) {
    *   console.log(cachedContent);
    * }
    * ```
@@ -73,6 +73,7 @@ export class Caches extends BaseModule {
     params: types.CreateCachedContentParameters,
   ): Promise<types.CachedContent> {
     let response: Promise<types.CachedContent>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -103,10 +104,7 @@ export class Caches extends BaseModule {
         }) as Promise<types.CachedContent>;
 
       return response.then((apiResponse) => {
-        const resp = converters.cachedContentFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.cachedContentFromVertex(apiResponse);
 
         return resp as types.CachedContent;
       });
@@ -138,10 +136,7 @@ export class Caches extends BaseModule {
         }) as Promise<types.CachedContent>;
 
       return response.then((apiResponse) => {
-        const resp = converters.cachedContentFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.cachedContentFromMldev(apiResponse);
 
         return resp as types.CachedContent;
       });
@@ -163,6 +158,7 @@ export class Caches extends BaseModule {
     params: types.GetCachedContentParameters,
   ): Promise<types.CachedContent> {
     let response: Promise<types.CachedContent>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -193,10 +189,7 @@ export class Caches extends BaseModule {
         }) as Promise<types.CachedContent>;
 
       return response.then((apiResponse) => {
-        const resp = converters.cachedContentFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.cachedContentFromVertex(apiResponse);
 
         return resp as types.CachedContent;
       });
@@ -228,10 +221,7 @@ export class Caches extends BaseModule {
         }) as Promise<types.CachedContent>;
 
       return response.then((apiResponse) => {
-        const resp = converters.cachedContentFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.cachedContentFromMldev(apiResponse);
 
         return resp as types.CachedContent;
       });
@@ -253,6 +243,7 @@ export class Caches extends BaseModule {
     params: types.DeleteCachedContentParameters,
   ): Promise<types.DeleteCachedContentResponse> {
     let response: Promise<types.DeleteCachedContentResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -342,6 +333,7 @@ export class Caches extends BaseModule {
     params: types.UpdateCachedContentParameters,
   ): Promise<types.CachedContent> {
     let response: Promise<types.CachedContent>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
@@ -372,10 +364,7 @@ export class Caches extends BaseModule {
         }) as Promise<types.CachedContent>;
 
       return response.then((apiResponse) => {
-        const resp = converters.cachedContentFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.cachedContentFromVertex(apiResponse);
 
         return resp as types.CachedContent;
       });
@@ -407,10 +396,7 @@ export class Caches extends BaseModule {
         }) as Promise<types.CachedContent>;
 
       return response.then((apiResponse) => {
-        const resp = converters.cachedContentFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp = converters.cachedContentFromMldev(apiResponse);
 
         return resp as types.CachedContent;
       });
@@ -421,13 +407,11 @@ export class Caches extends BaseModule {
     params: types.ListCachedContentsParameters,
   ): Promise<types.ListCachedContentsResponse> {
     let response: Promise<types.ListCachedContentsResponse>;
+
     let path: string = '';
     let queryParams: Record<string, string> = {};
     if (this.apiClient.isVertexAI()) {
-      const body = converters.listCachedContentsParametersToVertex(
-        this.apiClient,
-        params,
-      );
+      const body = converters.listCachedContentsParametersToVertex(params);
       path = common.formatMap(
         'cachedContents',
         body['_url'] as Record<string, unknown>,
@@ -451,19 +435,14 @@ export class Caches extends BaseModule {
         }) as Promise<types.ListCachedContentsResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.listCachedContentsResponseFromVertex(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp =
+          converters.listCachedContentsResponseFromVertex(apiResponse);
         const typedResp = new types.ListCachedContentsResponse();
         Object.assign(typedResp, resp);
         return typedResp;
       });
     } else {
-      const body = converters.listCachedContentsParametersToMldev(
-        this.apiClient,
-        params,
-      );
+      const body = converters.listCachedContentsParametersToMldev(params);
       path = common.formatMap(
         'cachedContents',
         body['_url'] as Record<string, unknown>,
@@ -487,10 +466,8 @@ export class Caches extends BaseModule {
         }) as Promise<types.ListCachedContentsResponse>;
 
       return response.then((apiResponse) => {
-        const resp = converters.listCachedContentsResponseFromMldev(
-          this.apiClient,
-          apiResponse,
-        );
+        const resp =
+          converters.listCachedContentsResponseFromMldev(apiResponse);
         const typedResp = new types.ListCachedContentsResponse();
         Object.assign(typedResp, resp);
         return typedResp;

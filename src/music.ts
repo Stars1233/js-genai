@@ -43,7 +43,7 @@ async function handleWebSocketMessage(
   } else {
     data = JSON.parse(event.data) as types.LiveMusicServerMessage;
   }
-  const response = converters.liveMusicServerMessageFromMldev(apiClient, data);
+  const response = converters.liveMusicServerMessageFromMldev(data);
   Object.assign(serverMessage, response);
   onmessage(serverMessage);
 }
@@ -148,13 +148,10 @@ export class LiveMusic {
     await onopenPromise;
 
     const model = t.tModel(this.apiClient, params.model);
-    const setup = converters.liveMusicClientSetupToMldev(this.apiClient, {
+    const setup = converters.liveMusicClientSetupToMldev({
       model,
     });
-    const clientMessage = converters.liveMusicClientMessageToMldev(
-      this.apiClient,
-      {setup},
-    );
+    const clientMessage = converters.liveMusicClientMessageToMldev({setup});
     conn.send(JSON.stringify(clientMessage));
 
     return new LiveMusicSession(conn, this.apiClient);
@@ -195,12 +192,8 @@ export class LiveMusicSession {
       );
     }
     const setWeightedPromptsParameters =
-      converters.liveMusicSetWeightedPromptsParametersToMldev(
-        this.apiClient,
-        params,
-      );
+      converters.liveMusicSetWeightedPromptsParametersToMldev(params);
     const clientContent = converters.liveMusicClientContentToMldev(
-      this.apiClient,
       setWeightedPromptsParameters,
     );
     this.conn.send(JSON.stringify({clientContent}));
@@ -221,24 +214,17 @@ export class LiveMusicSession {
     if (!params.musicGenerationConfig) {
       params.musicGenerationConfig = {};
     }
-    const setConfigParameters = converters.liveMusicSetConfigParametersToMldev(
-      this.apiClient,
-      params,
-    );
-    const clientMessage = converters.liveMusicClientMessageToMldev(
-      this.apiClient,
-      setConfigParameters,
-    );
+    const setConfigParameters =
+      converters.liveMusicSetConfigParametersToMldev(params);
+    const clientMessage =
+      converters.liveMusicClientMessageToMldev(setConfigParameters);
     this.conn.send(JSON.stringify(clientMessage));
   }
 
   private sendPlaybackControl(playbackControl: types.LiveMusicPlaybackControl) {
-    const clientMessage = converters.liveMusicClientMessageToMldev(
-      this.apiClient,
-      {
-        playbackControl,
-      },
-    );
+    const clientMessage = converters.liveMusicClientMessageToMldev({
+      playbackControl,
+    });
     this.conn.send(JSON.stringify(clientMessage));
   }
 

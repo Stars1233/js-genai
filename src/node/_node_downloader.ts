@@ -52,7 +52,7 @@ async function downloadFile(
   params: DownloadFileParameters,
   apiClient: ApiClient,
 ): Promise<HttpResponse | string> {
-  const name = tFileName(apiClient, params.file);
+  const name = tFileName(params.file);
   if (name !== undefined) {
     return await apiClient.request({
       path: `files/${name}:download`,

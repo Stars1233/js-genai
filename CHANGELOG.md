@@ -1,6 +1,75 @@
 # Changelog
 
 
+## [1.7.0](https://github.com/googleapis/js-genai/compare/v1.6.0...v1.7.0) (2025-06-25)
+
+
+### Features
+
+* Add compressionQuality enum for generate_videos ([4325773](https://github.com/googleapis/js-genai/commit/432577312dedb474e6892963f83edba830d9ed6d))
+* Add enhance_input_image and image_preservation_factor fields for upscale_image ([13eedda](https://github.com/googleapis/js-genai/commit/13eedda4c7ba0b190481e5e7f43995542702ee25))
+* Batches support in TS ([dd7355e](https://github.com/googleapis/js-genai/commit/dd7355efdfec4a7323c204b8bad6e6b07d897557))
+* expose the responseJsonSchema in GenerateContentConfig ([db54a5f](https://github.com/googleapis/js-genai/commit/db54a5f0f3cfa1f4ec300c2ea115eaf239a01639))
+
+
+### Bug Fixes
+
+* **live:** support ArrayBuffer in WebSocket messages ([5a8aeac](https://github.com/googleapis/js-genai/commit/5a8aeac1ce69e098b12f50b1299dab19ef0bd23a)), closes [#714](https://github.com/googleapis/js-genai/issues/714)
+
+## [1.6.0](https://github.com/googleapis/js-genai/compare/v1.5.1...v1.6.0) (2025-06-21)
+
+
+### Features
+
+* allow users to access headers for generateContent method and generateContentStream ([f5f0e02](https://github.com/googleapis/js-genai/commit/f5f0e023805ca75be348b38ad6a9382d5707f97a))
+* enable json schema for controlled output and function declaration. ([7d53d57](https://github.com/googleapis/js-genai/commit/7d53d578ea8b6fa7a418312357a8a593d3c0122a))
+* Include status code and export HTTP errors ([bcabcb6](https://github.com/googleapis/js-genai/commit/bcabcb6fa2975ff8b0afbbf108748def39f1e9aa))
+* support extra_body in HttpOptions ([1d48b6e](https://github.com/googleapis/js-genai/commit/1d48b6eafaee0d39ea72f7bfc396e45ada6c69ae))
+
+
+### Bug Fixes
+
+* Fix build errors when the mcp package is not installed. ([5b7e695](https://github.com/googleapis/js-genai/commit/5b7e695552b6d5cd1e55056bbe6bc9349a479e18))
+
+## [1.5.1](https://github.com/googleapis/js-genai/compare/v1.5.0...v1.5.1) (2025-06-13)
+
+
+### Bug Fixes
+
+* Update MCP dependencies to be type-only ([648019b](https://github.com/googleapis/js-genai/commit/648019bebb5cff3e8b3bb6db72534934bd7c1357))
+
+## [1.5.0](https://github.com/googleapis/js-genai/compare/v1.4.0...v1.5.0) (2025-06-11)
+
+
+### Features
+
+* add a timeout parameter to CallableToolConfig ([06f31fd](https://github.com/googleapis/js-genai/commit/06f31fdbb8be612759385190c6a03ea03d103dcf))
+* Add datastore_spec field for VertexAISearch ([1b18a52](https://github.com/googleapis/js-genai/commit/1b18a527ab4b9526a8901ecdc0453795df0905bf))
+* Add support for Veo frame interpolation and video extension ([53f22e6](https://github.com/googleapis/js-genai/commit/53f22e6ce54dc0b226145e9bcba20b731ea4645f))
+* Make the MCP SDK an optional peer dependency. ([2472fd3](https://github.com/googleapis/js-genai/commit/2472fd364a29ad3cf3e15bbb61a1f3ac00914d86))
+* RAG - Introducing context storing for Gemini Live API. ([bdc2355](https://github.com/googleapis/js-genai/commit/bdc2355f2f10b839aa95162216dc4d35c60cd58e))
+
+
+### Bug Fixes
+
+* Prioritize credentials over implicit api key (from env) for node client using Vertex AI ([d82aba2](https://github.com/googleapis/js-genai/commit/d82aba244bdb804b063ef8a983b2916c00b901d2)), closes [#616](https://github.com/googleapis/js-genai/issues/616)
+
+## [1.4.0](https://github.com/googleapis/js-genai/compare/v1.3.0...v1.4.0) (2025-06-04)
+
+
+### Features
+
+* Add enhance_prompt field for Gemini Developer API generate_videos ([ea3cc8e](https://github.com/googleapis/js-genai/commit/ea3cc8e8eae1df3dd1cc7fe0a897a12705c51a59))
+* Enable url_context for Vertex ([e377f58](https://github.com/googleapis/js-genai/commit/e377f583747d1546fbc9ea1412c9c51bdf11c977))
+* **js:** Support `GEMINI_API_KEY` as environment variable for setting API key. ([97850ad](https://github.com/googleapis/js-genai/commit/97850ada42304ef6877523a9c3006303abcfea2a))
+
+
+### Bug Fixes
+
+* defined Type becomes TYPE_UNSPECIFIED when obfuscation is enabled ([1ddf4f5](https://github.com/googleapis/js-genai/commit/1ddf4f5e19b774588d5d51fcc854c9cdad31bd61))
+* Update live SDK sample to address choppy audio quality ([319bcbb](https://github.com/googleapis/js-genai/commit/319bcbbec8164b84c1f5a052435dcf62713572d5))
+* use Enum's value instead of keys for obfuscation. ([132bd04](https://github.com/googleapis/js-genai/commit/132bd04913ccacbd317cd7273c318059b57e42fb))
+
 ## [1.3.0](https://github.com/googleapis/js-genai/compare/v1.2.0...v1.3.0) (2025-05-30)
 
 
