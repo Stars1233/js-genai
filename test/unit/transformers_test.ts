@@ -188,61 +188,36 @@ describe('tModelsUrl', () => {
 
 describe('tExtractModels', () => {
   it('should return empty array when no models, tunedModels, or publisherModels fields exist', () => {
-    const apiClient = new ApiClient({
-      auth: new FakeAuth(),
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
     const response = {};
-    expect(tExtractModels(apiClient, response)).toEqual([]);
+    expect(tExtractModels(response)).toEqual([]);
   });
 
   it('should return models array when models field exists', () => {
-    const apiClient = new ApiClient({
-      auth: new FakeAuth(),
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
     const models = [{name: 'model1'}, {name: 'model2'}];
     const response = {models};
-    expect(tExtractModels(apiClient, response)).toEqual(models);
+    expect(tExtractModels(response)).toEqual(models);
   });
 
   it('should return tunedModels array when tunedModels field exists', () => {
-    const apiClient = new ApiClient({
-      auth: new FakeAuth(),
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
     const tunedModels = [{name: 'tunedModel1'}, {name: 'tunedModel2'}];
     const response = {tunedModels};
-    expect(tExtractModels(apiClient, response)).toEqual(tunedModels);
+    expect(tExtractModels(response)).toEqual(tunedModels);
   });
 
   it('should return publisherModels array when publisherModels field exists', () => {
-    const apiClient = new ApiClient({
-      auth: new FakeAuth(),
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
     const publisherModels = [
       {name: 'publisherModel1'},
       {name: 'publisherModel2'},
     ];
     const response = {publisherModels};
-    expect(tExtractModels(apiClient, response)).toEqual(publisherModels);
+    expect(tExtractModels(response)).toEqual(publisherModels);
   });
 
   it('should prioritize models field if multiple fields exist', () => {
-    const apiClient = new ApiClient({
-      auth: new FakeAuth(),
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
     const models = [{name: 'model1'}, {name: 'model2'}];
     const tunedModels = [{name: 'tunedModel1'}, {name: 'tunedModel2'}];
     const response = {models, tunedModels};
-    expect(tExtractModels(apiClient, response)).toEqual(models);
+    expect(tExtractModels(response)).toEqual(models);
   });
 });
 
@@ -255,41 +230,14 @@ describe('tSpeechConfig', () => {
         },
       },
     };
-    expect(
-      tSpeechConfig(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        'voice-name',
-      ),
-    ).toEqual(speechConfig);
+    expect(tSpeechConfig('voice-name')).toEqual(speechConfig);
   });
 });
 
 describe('tTool', () => {
-  let vertexApiClient: ApiClient;
-  let mlDevApiClient: ApiClient;
-  beforeEach(() => {
-    vertexApiClient = new ApiClient({
-      auth: new FakeAuth(),
-      vertexai: true,
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
-    mlDevApiClient = new ApiClient({
-      auth: new FakeAuth(),
-      apiKey: 'apikey-from-opts',
-      vertexai: false,
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
-  });
   it('no change', () => {
     const tool = {functionDeclarations: [{name: 'function-name'}]};
-    expect(tTool(vertexApiClient, tool)).toEqual(tool);
-    expect(tTool(mlDevApiClient, tool)).toEqual(tool);
+    expect(tTool(tool)).toEqual(tool);
   });
 });
 
@@ -315,139 +263,43 @@ describe('createJsonSchemaValidator', () => {
 describe('tTools', () => {
   it('no change', () => {
     const tools = [{functionDeclarations: [{name: 'function-name'}]}];
-    expect(
-      tTools(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        tools,
-      ),
-    ).toEqual(tools);
+    expect(tTools(tools)).toEqual(tools);
   });
   it('null', () => {
     expect(() => {
-      tTools(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        null,
-      );
+      tTools(null);
     }).toThrowError('tools is required');
   });
   it('undefined', () => {
     expect(() => {
-      tTools(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        undefined,
-      );
+      tTools(undefined);
     }).toThrowError('tools is required');
   });
   it('empty array', () => {
-    expect(
-      tTools(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        [],
-      ),
-    ).toEqual([]);
+    expect(tTools([])).toEqual([]);
   });
   it('non array', () => {
     expect(() => {
-      tTools(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {},
-      );
+      tTools({});
     }).toThrowError('tools is required and must be an array of Tools');
   });
 });
 
 describe('tSchema', () => {
-  let vertexApiClient: ApiClient;
-  let mlDevApiClient: ApiClient;
-  beforeEach(() => {
-    vertexApiClient = new ApiClient({
-      auth: new FakeAuth(),
-      vertexai: true,
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
-    mlDevApiClient = new ApiClient({
-      auth: new FakeAuth(),
-      apiKey: 'apikey-from-opts',
-      vertexai: false,
-      uploader: new CrossUploader(),
-      downloader: new CrossDownloader(),
-    });
-  });
   it('no change', () => {
     const schema = {
       title: 'title',
       default: 'default',
     } as types.Schema;
-    expect(
-      tSchema(
-        new ApiClient({
-          auth: new FakeAuth(),
-          vertexai: true,
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        schema,
-      ),
-    ).toEqual(schema);
-    expect(
-      tSchema(
-        new ApiClient({
-          auth: new FakeAuth(),
-          vertexai: false,
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        schema,
-      ),
-    ).toEqual(schema);
+    expect(tSchema(schema)).toEqual(schema);
+    expect(tSchema(schema)).toEqual(schema);
   });
   it('processes anyOf', () => {
     const schema = {
       anyOf: [{type: 'STRING'}, {type: 'NUMBER'}],
     } as types.Schema;
-    expect(
-      tSchema(
-        new ApiClient({
-          auth: new FakeAuth(),
-          vertexai: true,
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        schema,
-      ),
-    ).toEqual(schema);
-    expect(
-      tSchema(
-        new ApiClient({
-          auth: new FakeAuth(),
-          vertexai: false,
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        schema,
-      ),
-    ).toEqual(schema);
+    expect(tSchema(schema)).toEqual(schema);
+    expect(tSchema(schema)).toEqual(schema);
   });
   it('processes items', () => {
     const schema = {
@@ -461,28 +313,8 @@ describe('tSchema', () => {
         },
       },
     } as types.Schema;
-    expect(
-      tSchema(
-        new ApiClient({
-          auth: new FakeAuth(),
-          vertexai: true,
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        schema,
-      ),
-    ).toEqual(schema);
-    expect(
-      tSchema(
-        new ApiClient({
-          auth: new FakeAuth(),
-          vertexai: false,
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        schema,
-      ),
-    ).toEqual(schema);
+    expect(tSchema(schema)).toEqual(schema);
+    expect(tSchema(schema)).toEqual(schema);
   });
   it('process properties', () => {
     const schema = {
@@ -493,50 +325,20 @@ describe('tSchema', () => {
         },
       },
     } as types.Schema;
-    expect(
-      tSchema(
-        new ApiClient({
-          auth: new FakeAuth(),
-          vertexai: true,
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        schema,
-      ),
-    ).toEqual(schema);
-    expect(
-      tSchema(
-        new ApiClient({
-          auth: new FakeAuth(),
-          vertexai: false,
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        schema,
-      ),
-    ).toEqual(schema);
+    expect(tSchema(schema)).toEqual(schema);
+    expect(tSchema(schema)).toEqual(schema);
   });
   it('should throw error for tuple schema due to item field data type mismatch', () => {
     const tupleSchema = z.object({
       tupleField: z.tuple([z.string(), z.number()]),
     });
-    expect(() =>
-      tSchema(vertexApiClient, zodToJsonSchema(tupleSchema)),
-    ).toThrowError();
-    expect(() =>
-      tSchema(mlDevApiClient, zodToJsonSchema(tupleSchema)),
-    ).toThrowError();
+    expect(() => tSchema(zodToJsonSchema(tupleSchema))).toThrowError();
   });
   it('should throw error for set schema due to unsupported type(set): uniqueItems', () => {
     const setSchema = z.object({
       setField: z.set(z.string()),
     });
-    expect(() =>
-      tSchema(vertexApiClient, zodToJsonSchema(setSchema)),
-    ).toThrowError();
-    expect(() =>
-      tSchema(mlDevApiClient, zodToJsonSchema(setSchema)),
-    ).toThrowError();
+    expect(() => tSchema(zodToJsonSchema(setSchema))).toThrowError();
   });
   it('should throw error for nested zod object referred twice due to unsupported property: $ref', () => {
     /*
@@ -570,12 +372,7 @@ describe('tSchema', () => {
       inner: innerObject,
       otherInner: innerObject,
     });
-    expect(() =>
-      tSchema(vertexApiClient, zodToJsonSchema(nestedSchema)),
-    ).toThrowError();
-    expect(() =>
-      tSchema(mlDevApiClient, zodToJsonSchema(nestedSchema)),
-    ).toThrowError();
+    expect(() => tSchema(zodToJsonSchema(nestedSchema))).toThrowError();
   });
   it('should process simple zod object, with optional fields', () => {
     const zodSchema = z.object({
@@ -635,12 +432,7 @@ describe('tSchema', () => {
         'simpleBoolean',
       ],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(zodSchema))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(zodSchema))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(zodSchema))).toEqual(expected);
   });
   it('should process nested zod object if it was only referred once', () => {
     const innerObject = z.object({
@@ -674,12 +466,7 @@ describe('tSchema', () => {
       },
       required: ['simpleString', 'simpleInteger', 'inner'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(nestedSchema))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(nestedSchema))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(nestedSchema))).toEqual(expected);
   });
   it('should process propertyOrdering', () => {
     const objectWithPropertyOrdering = z.object({
@@ -718,8 +505,7 @@ describe('tSchema', () => {
       propertyOrdering: ['simpleObject', 'simpleString'],
     };
 
-    expect(tSchema(vertexApiClient, jsonSchemaFromZod)).toEqual(expected);
-    expect(tSchema(mlDevApiClient, jsonSchemaFromZod)).toEqual(expected);
+    expect(tSchema(jsonSchemaFromZod)).toEqual(expected);
   });
   it('should process primitive types directly', () => {
     const stringDirectly = z
@@ -743,10 +529,7 @@ describe('tSchema', () => {
       pattern: '^[a-zA-Z]{1,10}$',
       description: 'This is a simple string',
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(stringDirectly))).toEqual(
-      expectedStringDirectly,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(stringDirectly))).toEqual(
+    expect(tSchema(zodToJsonSchema(stringDirectly))).toEqual(
       expectedStringDirectly,
     );
 
@@ -756,10 +539,7 @@ describe('tSchema', () => {
       maximum: 10,
       description: 'This is a simple number',
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(numberDirectly))).toEqual(
-      expectedNumberDirectly,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(numberDirectly))).toEqual(
+    expect(tSchema(zodToJsonSchema(numberDirectly))).toEqual(
       expectedNumberDirectly,
     );
     const expectedIntegerDirectly = {
@@ -767,10 +547,7 @@ describe('tSchema', () => {
       format: 'int64',
       description: 'This is a simple integer',
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(integerDirectly))).toEqual(
-      expectedIntegerDirectly,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(integerDirectly))).toEqual(
+    expect(tSchema(zodToJsonSchema(integerDirectly))).toEqual(
       expectedIntegerDirectly,
     );
 
@@ -778,10 +555,7 @@ describe('tSchema', () => {
       type: types.Type.BOOLEAN,
       description: 'This is a simple boolean',
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(booleanDirectly))).toEqual(
-      expectedBooleanDirectly,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(booleanDirectly))).toEqual(
+    expect(tSchema(zodToJsonSchema(booleanDirectly))).toEqual(
       expectedBooleanDirectly,
     );
   });
@@ -815,12 +589,7 @@ describe('tSchema', () => {
       required: ['stringArray', 'numberArray'],
     };
 
-    expect(tSchema(vertexApiClient, zodToJsonSchema(zodSchema))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(zodSchema))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(zodSchema))).toEqual(expected);
   });
   it('should process zod array of objects', () => {
     const innerObject = z.object({
@@ -852,12 +621,7 @@ describe('tSchema', () => {
       },
       required: ['arrayOfObjects'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(objectArray))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(objectArray))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(objectArray))).toEqual(expected);
   });
   it('should process default value', () => {
     const defaultObject = z.object({
@@ -872,12 +636,7 @@ describe('tSchema', () => {
         },
       },
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(defaultObject))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(defaultObject))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(defaultObject))).toEqual(expected);
   });
   it('should process primitive nullables', () => {
     /*
@@ -903,26 +662,14 @@ describe('tSchema', () => {
       },
       required: ['nullablePrimitives'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(objectNullable))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(objectNullable))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(objectNullable))).toEqual(expected);
   });
   it('should throw error when there is only null in the type', () => {
     const objectNullable = z.object({
       nullValue: z.null(),
     });
 
-    expect(() =>
-      tSchema(vertexApiClient, zodToJsonSchema(objectNullable)),
-    ).toThrowError(
-      'type: null can not be the only possible type for the field.',
-    );
-    expect(() =>
-      tSchema(mlDevApiClient, zodToJsonSchema(objectNullable)),
-    ).toThrowError(
+    expect(() => tSchema(zodToJsonSchema(objectNullable))).toThrowError(
       'type: null can not be the only possible type for the field.',
     );
   });
@@ -944,12 +691,7 @@ describe('tSchema', () => {
       },
       nullable: true,
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(nullableArray))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(nullableArray))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(nullableArray))).toEqual(expected);
   });
   it('should process nullable object and remove anyOf field when necessary', () => {
     /*
@@ -990,12 +732,7 @@ describe('tSchema', () => {
       },
       required: ['nullableObject'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(objectNullable))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(objectNullable))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(objectNullable))).toEqual(expected);
   });
   it('should process union consist of only not-nullable primitive types without additional fields', () => {
     /*
@@ -1026,12 +763,7 @@ describe('tSchema', () => {
       },
       required: ['unionPrimitivesField'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(unionPrimitives))).toEqual(expected);
   });
   it('should process union consist of only not-nullable primitive types without additional fields, one of the union type is null', () => {
     /*
@@ -1059,12 +791,7 @@ describe('tSchema', () => {
       },
       required: ['unionPrimitivesField'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(unionPrimitives))).toEqual(expected);
   });
   it('should process union primitive types, one of the union type is nullable, and one of the union type is null', () => {
     /*
@@ -1103,12 +830,7 @@ describe('tSchema', () => {
       },
       required: ['unionPrimitivesField'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(unionPrimitives))).toEqual(expected);
   });
   it('should process union primitive types, when types in the union are primitives without any additional fields, one of them is nullable', () => {
     /*
@@ -1140,12 +862,7 @@ describe('tSchema', () => {
       },
       required: ['unionPrimitivesField'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(unionPrimitives))).toEqual(expected);
   });
   it('should process union primitive types, when types in the union are primitives without any additional fields, both of them is nullable', () => {
     /*
@@ -1180,12 +897,7 @@ describe('tSchema', () => {
       },
       required: ['unionPrimitivesField'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(unionPrimitives))).toEqual(expected);
   });
   it('should process union primitive types, when types in the union are primitives with additional fields, not nullable', () => {
     /*
@@ -1226,12 +938,7 @@ describe('tSchema', () => {
       },
       required: ['unionPrimitivesField'],
     };
-    expect(tSchema(vertexApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
-    expect(tSchema(mlDevApiClient, zodToJsonSchema(unionPrimitives))).toEqual(
-      expected,
-    );
+    expect(tSchema(zodToJsonSchema(unionPrimitives))).toEqual(expected);
   });
   it('should process union objects', () => {
     /*
@@ -1277,12 +984,9 @@ describe('tSchema', () => {
       },
       required: ['unionPrimitivesObjectsField'],
     };
-    expect(
-      tSchema(vertexApiClient, zodToJsonSchema(unionPrimitivesAndObjects)),
-    ).toEqual(expected);
-    expect(
-      tSchema(mlDevApiClient, zodToJsonSchema(unionPrimitivesAndObjects)),
-    ).toEqual(expected);
+    expect(tSchema(zodToJsonSchema(unionPrimitivesAndObjects))).toEqual(
+      expected,
+    );
   });
   it('should process union array and objects', () => {
     /*
@@ -1326,76 +1030,34 @@ describe('tSchema', () => {
       },
       required: ['uninonField'],
     };
-    expect(
-      tSchema(vertexApiClient, zodToJsonSchema(uninonArrayAndObjects)),
-    ).toEqual(expected);
-    expect(
-      tSchema(mlDevApiClient, zodToJsonSchema(uninonArrayAndObjects)),
-    ).toEqual(expected);
+    expect(tSchema(zodToJsonSchema(uninonArrayAndObjects))).toEqual(expected);
   });
 });
 
 describe('tPart', () => {
   it('null', () => {
     expect(() => {
-      tPart(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        null,
-      );
+      tPart(null);
     }).toThrowError('PartUnion is required');
   });
 
   it('undefined', () => {
     expect(() => {
-      tPart(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        undefined,
-      );
+      tPart(undefined);
     }).toThrowError('PartUnion is required');
   });
 
   it('string', () => {
-    expect(
-      tPart(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        'test string',
-      ),
-    ).toEqual({text: 'test string'});
+    expect(tPart('test string')).toEqual({text: 'test string'});
   });
 
   it('part object', () => {
-    expect(
-      tPart(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {text: 'test string'},
-      ),
-    ).toEqual({text: 'test string'});
+    expect(tPart({text: 'test string'})).toEqual({text: 'test string'});
   });
 
   it('int', () => {
     expect(() => {
       tPart(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
         // @ts-expect-error: escaping to test unsupported type
         123,
       );
@@ -1406,77 +1068,39 @@ describe('tPart', () => {
 describe('tParts', () => {
   it('null', () => {
     expect(() => {
-      tParts(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        null,
-      );
+      tParts(null);
     }).toThrowError('PartListUnion is required');
   });
 
   it('undefined', () => {
     expect(() => {
-      tParts(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        undefined,
-      );
+      tParts(undefined);
     }).toThrowError('PartListUnion is required');
   });
 
   it('empty array', () => {
     expect(() => {
-      tParts(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        [],
-      );
+      tParts([]);
     }).toThrowError('PartListUnion is required');
   });
 
   it('string array', () => {
-    expect(
-      tParts(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        ['test string 1', 'test string 2'],
-      ),
-    ).toEqual([{text: 'test string 1'}, {text: 'test string 2'}]);
+    expect(tParts(['test string 1', 'test string 2'])).toEqual([
+      {text: 'test string 1'},
+      {text: 'test string 2'},
+    ]);
   });
 
   it('string and part object', () => {
-    expect(
-      tParts(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        ['test string 1', {text: 'test string 2'}],
-      ),
-    ).toEqual([{text: 'test string 1'}, {text: 'test string 2'}]);
+    expect(tParts(['test string 1', {text: 'test string 2'}])).toEqual([
+      {text: 'test string 1'},
+      {text: 'test string 2'},
+    ]);
   });
 
   it('int', () => {
     expect(() => {
       tParts(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
         // @ts-expect-error: escaping to test unsupported type
         123,
       );
@@ -1486,11 +1110,6 @@ describe('tParts', () => {
   it('int in array', () => {
     expect(() => {
       tParts(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
         // @ts-expect-error: escaping to test unsupported type
         [123],
       );
@@ -1502,11 +1121,6 @@ describe('tContent', () => {
   it('null', () => {
     expect(() => {
       tContent(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
         // @ts-expect-error: escaping to test unsupported type
         null,
       );
@@ -1515,38 +1129,19 @@ describe('tContent', () => {
 
   it('undefined', () => {
     expect(() => {
-      tContent(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        undefined,
-      );
+      tContent(undefined);
     }).toThrowError('ContentUnion is required');
   });
 
   it('empty array', () => {
     expect(() => {
-      tContent(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        [],
-      );
+      tContent([]);
     }).toThrowError('PartListUnion is required');
   });
 
   it('number', () => {
     expect(() => {
       tContent(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
         // @ts-expect-error: escaping to test unsupported type
         123,
       );
@@ -1554,45 +1149,26 @@ describe('tContent', () => {
   });
 
   it('text part', () => {
-    expect(
-      tContent(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {text: 'test string'},
-      ),
-    ).toEqual({role: 'user', parts: [{text: 'test string'}]});
+    expect(tContent({text: 'test string'})).toEqual({
+      role: 'user',
+      parts: [{text: 'test string'}],
+    });
   });
 
   it('content', () => {
     expect(
-      tContent(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {
-          role: 'user',
-          parts: [{text: 'test string'}],
-        },
-      ),
+      tContent({
+        role: 'user',
+        parts: [{text: 'test string'}],
+      }),
     ).toEqual({role: 'user', parts: [{text: 'test string'}]});
   });
 
   it('string', () => {
-    expect(
-      tContent(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        'test string',
-      ),
-    ).toEqual({role: 'user', parts: [{text: 'test string'}]});
+    expect(tContent('test string')).toEqual({
+      role: 'user',
+      parts: [{text: 'test string'}],
+    });
   });
 });
 
@@ -1600,11 +1176,6 @@ describe('tContents', () => {
   it('null', () => {
     expect(() => {
       tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
         // @ts-expect-error: escaping to test error
         null,
       );
@@ -1613,71 +1184,36 @@ describe('tContents', () => {
 
   it('undefined', () => {
     expect(() => {
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        undefined,
-      );
+      tContents(undefined);
     }).toThrowError('contents are required');
   });
 
   it('empty array', () => {
     expect(() => {
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        [],
-      );
+      tContents([]);
     }).toThrowError('contents are required');
   });
 
   it('content', () => {
     expect(
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {
-          role: 'user',
-          parts: [{text: 'test string'}],
-        },
-      ),
+      tContents({
+        role: 'user',
+        parts: [{text: 'test string'}],
+      }),
     ).toEqual([{role: 'user', parts: [{text: 'test string'}]}]);
   });
 
   it('text part', () => {
-    expect(
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {text: 'test string'},
-      ),
-    ).toEqual([{role: 'user', parts: [{text: 'test string'}]}]);
+    expect(tContents({text: 'test string'})).toEqual([
+      {role: 'user', parts: [{text: 'test string'}]},
+    ]);
   });
 
   it('function call part', () => {
     expect(() => {
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {
-          functionCall: {name: 'function-name', args: {arg1: 'arg1'}},
-        },
-      );
+      tContents({
+        functionCall: {name: 'function-name', args: {arg1: 'arg1'}},
+      });
     }).toThrowError(
       'To specify functionCall or functionResponse parts, please wrap them in a Content object, specifying the role for them',
     );
@@ -1685,19 +1221,12 @@ describe('tContents', () => {
 
   it('function call part in array', () => {
     expect(() => {
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        [
-          {
-            functionCall: {name: 'function-name', args: {arg1: 'arg1'}},
-          },
-          {text: 'test string'},
-        ],
-      );
+      tContents([
+        {
+          functionCall: {name: 'function-name', args: {arg1: 'arg1'}},
+        },
+        {text: 'test string'},
+      ]);
     }).toThrowError(
       'To specify functionCall or functionResponse parts, please wrap them, and any other parts, in Content objects as appropriate, specifying the role for them',
     );
@@ -1705,19 +1234,12 @@ describe('tContents', () => {
 
   it('function response part', () => {
     expect(() => {
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {
-          functionResponse: {
-            name: 'name1',
-            response: {result: {answer: 'answer1'}},
-          },
+      tContents({
+        functionResponse: {
+          name: 'name1',
+          response: {result: {answer: 'answer1'}},
         },
-      );
+      });
     }).toThrowError(
       'To specify functionCall or functionResponse parts, please wrap them in a Content object, specifying the role for them',
     );
@@ -1725,53 +1247,32 @@ describe('tContents', () => {
 
   it('function response part in array', () => {
     expect(() => {
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        [
-          {
-            functionResponse: {
-              name: 'name1',
-              response: {result: {answer: 'answer1'}},
-            },
+      tContents([
+        {
+          functionResponse: {
+            name: 'name1',
+            response: {result: {answer: 'answer1'}},
           },
-          {text: 'test string'},
-        ],
-      );
+        },
+        {text: 'test string'},
+      ]);
     }).toThrowError(
       'To specify functionCall or functionResponse parts, please wrap them, and any other parts, in Content objects as appropriate, specifying the role for them',
     );
   });
 
   it('string', () => {
-    expect(
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        'test string',
-      ),
-    ).toEqual([{role: 'user', parts: [{text: 'test string'}]}]);
+    expect(tContents('test string')).toEqual([
+      {role: 'user', parts: [{text: 'test string'}]},
+    ]);
   });
 
   it('array of contents', () => {
     expect(
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        [
-          {role: 'user', parts: [{text: 'test string 1'}]},
-          {role: 'model', parts: [{text: 'test string 2'}]},
-        ],
-      ),
+      tContents([
+        {role: 'user', parts: [{text: 'test string 1'}]},
+        {role: 'model', parts: [{text: 'test string 2'}]},
+      ]),
     ).toEqual([
       {role: 'user', parts: [{text: 'test string 1'}]},
       {role: 'model', parts: [{text: 'test string 2'}]},
@@ -1780,14 +1281,7 @@ describe('tContents', () => {
 
   it('array of text parts', () => {
     expect(
-      tContents(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        [{text: 'test string 1'}, {text: 'test string 2'}],
-      ),
+      tContents([{text: 'test string 1'}, {text: 'test string 2'}]),
     ).toEqual([
       {
         role: 'user',
@@ -1800,31 +1294,13 @@ describe('tContents', () => {
 describe('tFileName', () => {
   it('no change', () => {
     const fileName = 'test file name';
-    expect(
-      tFileName(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        fileName,
-      ),
-    ).toEqual(fileName);
+    expect(tFileName(fileName)).toEqual(fileName);
   });
 
   it('file starts with files/', () => {
     const fileName = 'test file name';
     const fileNameWithFilesPrefix = `files/${fileName}`;
-    expect(
-      tFileName(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        fileNameWithFilesPrefix,
-      ),
-    ).toEqual(fileName);
+    expect(tFileName(fileNameWithFilesPrefix)).toEqual(fileName);
   });
 
   it('video file', () => {
@@ -1832,43 +1308,16 @@ describe('tFileName', () => {
     const fileUri = `https://generativelanguage.googleapis.com/v1beta/files/${
       fileName
     }:download?alt=media`;
-    expect(
-      tFileName(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {uri: fileUri},
-      ),
-    ).toEqual(fileName);
+    expect(tFileName({uri: fileUri})).toEqual(fileName);
   });
   it('generated video file', () => {
     const fileName = 'filename';
     const fileUri = `https://generativelanguage.googleapis.com/v1beta/files/${
       fileName
     }:download?alt=media`;
-    expect(
-      tFileName(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {video: {uri: fileUri}},
-      ),
-    ).toEqual(fileName);
+    expect(tFileName({video: {uri: fileUri}})).toEqual(fileName);
   });
   it('generated video file with no uri', () => {
-    expect(
-      tFileName(
-        new ApiClient({
-          auth: new FakeAuth(),
-          uploader: new CrossUploader(),
-          downloader: new CrossDownloader(),
-        }),
-        {video: {uri: undefined}},
-      ),
-    ).toEqual(undefined);
+    expect(tFileName({video: {uri: undefined}})).toEqual(undefined);
   });
 });

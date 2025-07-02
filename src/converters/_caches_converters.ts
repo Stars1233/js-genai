@@ -12,7 +12,6 @@ import * as t from '../_transformers.js';
 import * as types from '../types.js';
 
 export function videoMetadataToMldev(
-  apiClient: ApiClient,
   fromObject: types.VideoMetadata,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -35,10 +34,7 @@ export function videoMetadataToMldev(
   return toObject;
 }
 
-export function blobToMldev(
-  apiClient: ApiClient,
-  fromObject: types.Blob,
-): Record<string, unknown> {
+export function blobToMldev(fromObject: types.Blob): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
   if (common.getValueByPath(fromObject, ['displayName']) !== undefined) {
@@ -59,7 +55,6 @@ export function blobToMldev(
 }
 
 export function fileDataToMldev(
-  apiClient: ApiClient,
   fromObject: types.FileData,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -81,10 +76,7 @@ export function fileDataToMldev(
   return toObject;
 }
 
-export function partToMldev(
-  apiClient: ApiClient,
-  fromObject: types.Part,
-): Record<string, unknown> {
+export function partToMldev(fromObject: types.Part): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
   const fromVideoMetadata = common.getValueByPath(fromObject, [
@@ -94,7 +86,7 @@ export function partToMldev(
     common.setValueByPath(
       toObject,
       ['videoMetadata'],
-      videoMetadataToMldev(apiClient, fromVideoMetadata),
+      videoMetadataToMldev(fromVideoMetadata),
     );
   }
 
@@ -108,7 +100,7 @@ export function partToMldev(
     common.setValueByPath(
       toObject,
       ['inlineData'],
-      blobToMldev(apiClient, fromInlineData),
+      blobToMldev(fromInlineData),
     );
   }
 
@@ -117,7 +109,7 @@ export function partToMldev(
     common.setValueByPath(
       toObject,
       ['fileData'],
-      fileDataToMldev(apiClient, fromFileData),
+      fileDataToMldev(fromFileData),
     );
   }
 
@@ -167,7 +159,6 @@ export function partToMldev(
 }
 
 export function contentToMldev(
-  apiClient: ApiClient,
   fromObject: types.Content,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -177,7 +168,7 @@ export function contentToMldev(
     let transformedList = fromParts;
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return partToMldev(apiClient, item);
+        return partToMldev(item);
       });
     }
     common.setValueByPath(toObject, ['parts'], transformedList);
@@ -192,7 +183,6 @@ export function contentToMldev(
 }
 
 export function functionDeclarationToMldev(
-  apiClient: ApiClient,
   fromObject: types.FunctionDeclaration,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -217,16 +207,37 @@ export function functionDeclarationToMldev(
     common.setValueByPath(toObject, ['parameters'], fromParameters);
   }
 
+  const fromParametersJsonSchema = common.getValueByPath(fromObject, [
+    'parametersJsonSchema',
+  ]);
+  if (fromParametersJsonSchema != null) {
+    common.setValueByPath(
+      toObject,
+      ['parametersJsonSchema'],
+      fromParametersJsonSchema,
+    );
+  }
+
   const fromResponse = common.getValueByPath(fromObject, ['response']);
   if (fromResponse != null) {
     common.setValueByPath(toObject, ['response'], fromResponse);
+  }
+
+  const fromResponseJsonSchema = common.getValueByPath(fromObject, [
+    'responseJsonSchema',
+  ]);
+  if (fromResponseJsonSchema != null) {
+    common.setValueByPath(
+      toObject,
+      ['responseJsonSchema'],
+      fromResponseJsonSchema,
+    );
   }
 
   return toObject;
 }
 
 export function intervalToMldev(
-  apiClient: ApiClient,
   fromObject: types.Interval,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -245,7 +256,6 @@ export function intervalToMldev(
 }
 
 export function googleSearchToMldev(
-  apiClient: ApiClient,
   fromObject: types.GoogleSearch,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -257,7 +267,7 @@ export function googleSearchToMldev(
     common.setValueByPath(
       toObject,
       ['timeRangeFilter'],
-      intervalToMldev(apiClient, fromTimeRangeFilter),
+      intervalToMldev(fromTimeRangeFilter),
     );
   }
 
@@ -265,7 +275,6 @@ export function googleSearchToMldev(
 }
 
 export function dynamicRetrievalConfigToMldev(
-  apiClient: ApiClient,
   fromObject: types.DynamicRetrievalConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -286,7 +295,6 @@ export function dynamicRetrievalConfigToMldev(
 }
 
 export function googleSearchRetrievalToMldev(
-  apiClient: ApiClient,
   fromObject: types.GoogleSearchRetrieval,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -298,7 +306,7 @@ export function googleSearchRetrievalToMldev(
     common.setValueByPath(
       toObject,
       ['dynamicRetrievalConfig'],
-      dynamicRetrievalConfigToMldev(apiClient, fromDynamicRetrievalConfig),
+      dynamicRetrievalConfigToMldev(fromDynamicRetrievalConfig),
     );
   }
 
@@ -312,7 +320,6 @@ export function enterpriseWebSearchToMldev(): Record<string, unknown> {
 }
 
 export function apiKeyConfigToMldev(
-  apiClient: ApiClient,
   fromObject: types.ApiKeyConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -325,7 +332,6 @@ export function apiKeyConfigToMldev(
 }
 
 export function authConfigToMldev(
-  apiClient: ApiClient,
   fromObject: types.AuthConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -375,7 +381,6 @@ export function authConfigToMldev(
 }
 
 export function googleMapsToMldev(
-  apiClient: ApiClient,
   fromObject: types.GoogleMaps,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -393,10 +398,7 @@ export function urlContextToMldev(): Record<string, unknown> {
   return toObject;
 }
 
-export function toolToMldev(
-  apiClient: ApiClient,
-  fromObject: types.Tool,
-): Record<string, unknown> {
+export function toolToMldev(fromObject: types.Tool): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
   const fromFunctionDeclarations = common.getValueByPath(fromObject, [
@@ -406,7 +408,7 @@ export function toolToMldev(
     let transformedList = fromFunctionDeclarations;
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return functionDeclarationToMldev(apiClient, item);
+        return functionDeclarationToMldev(item);
       });
     }
     common.setValueByPath(toObject, ['functionDeclarations'], transformedList);
@@ -421,7 +423,7 @@ export function toolToMldev(
     common.setValueByPath(
       toObject,
       ['googleSearch'],
-      googleSearchToMldev(apiClient, fromGoogleSearch),
+      googleSearchToMldev(fromGoogleSearch),
     );
   }
 
@@ -432,7 +434,7 @@ export function toolToMldev(
     common.setValueByPath(
       toObject,
       ['googleSearchRetrieval'],
-      googleSearchRetrievalToMldev(apiClient, fromGoogleSearchRetrieval),
+      googleSearchRetrievalToMldev(fromGoogleSearchRetrieval),
     );
   }
 
@@ -460,11 +462,15 @@ export function toolToMldev(
     common.setValueByPath(toObject, ['codeExecution'], fromCodeExecution);
   }
 
+  const fromComputerUse = common.getValueByPath(fromObject, ['computerUse']);
+  if (fromComputerUse != null) {
+    common.setValueByPath(toObject, ['computerUse'], fromComputerUse);
+  }
+
   return toObject;
 }
 
 export function functionCallingConfigToMldev(
-  apiClient: ApiClient,
   fromObject: types.FunctionCallingConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -489,7 +495,6 @@ export function functionCallingConfigToMldev(
 }
 
 export function latLngToMldev(
-  apiClient: ApiClient,
   fromObject: types.LatLng,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -508,18 +513,13 @@ export function latLngToMldev(
 }
 
 export function retrievalConfigToMldev(
-  apiClient: ApiClient,
   fromObject: types.RetrievalConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
   const fromLatLng = common.getValueByPath(fromObject, ['latLng']);
   if (fromLatLng != null) {
-    common.setValueByPath(
-      toObject,
-      ['latLng'],
-      latLngToMldev(apiClient, fromLatLng),
-    );
+    common.setValueByPath(toObject, ['latLng'], latLngToMldev(fromLatLng));
   }
 
   const fromLanguageCode = common.getValueByPath(fromObject, ['languageCode']);
@@ -531,7 +531,6 @@ export function retrievalConfigToMldev(
 }
 
 export function toolConfigToMldev(
-  apiClient: ApiClient,
   fromObject: types.ToolConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -543,7 +542,7 @@ export function toolConfigToMldev(
     common.setValueByPath(
       toObject,
       ['functionCallingConfig'],
-      functionCallingConfigToMldev(apiClient, fromFunctionCallingConfig),
+      functionCallingConfigToMldev(fromFunctionCallingConfig),
     );
   }
 
@@ -554,7 +553,7 @@ export function toolConfigToMldev(
     common.setValueByPath(
       toObject,
       ['retrievalConfig'],
-      retrievalConfigToMldev(apiClient, fromRetrievalConfig),
+      retrievalConfigToMldev(fromRetrievalConfig),
     );
   }
 
@@ -562,7 +561,6 @@ export function toolConfigToMldev(
 }
 
 export function createCachedContentConfigToMldev(
-  apiClient: ApiClient,
   fromObject: types.CreateCachedContentConfig,
   parentObject: Record<string, unknown>,
 ): Record<string, unknown> {
@@ -585,10 +583,10 @@ export function createCachedContentConfigToMldev(
 
   const fromContents = common.getValueByPath(fromObject, ['contents']);
   if (parentObject !== undefined && fromContents != null) {
-    let transformedList = t.tContents(apiClient, fromContents);
+    let transformedList = t.tContents(fromContents);
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return contentToMldev(apiClient, item);
+        return contentToMldev(item);
       });
     }
     common.setValueByPath(parentObject, ['contents'], transformedList);
@@ -601,7 +599,7 @@ export function createCachedContentConfigToMldev(
     common.setValueByPath(
       parentObject,
       ['systemInstruction'],
-      contentToMldev(apiClient, t.tContent(apiClient, fromSystemInstruction)),
+      contentToMldev(t.tContent(fromSystemInstruction)),
     );
   }
 
@@ -610,7 +608,7 @@ export function createCachedContentConfigToMldev(
     let transformedList = fromTools;
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return toolToMldev(apiClient, item);
+        return toolToMldev(item);
       });
     }
     common.setValueByPath(parentObject, ['tools'], transformedList);
@@ -621,7 +619,7 @@ export function createCachedContentConfigToMldev(
     common.setValueByPath(
       parentObject,
       ['toolConfig'],
-      toolConfigToMldev(apiClient, fromToolConfig),
+      toolConfigToMldev(fromToolConfig),
     );
   }
 
@@ -652,7 +650,7 @@ export function createCachedContentParametersToMldev(
     common.setValueByPath(
       toObject,
       ['config'],
-      createCachedContentConfigToMldev(apiClient, fromConfig, toObject),
+      createCachedContentConfigToMldev(fromConfig, toObject),
     );
   }
 
@@ -706,7 +704,6 @@ export function deleteCachedContentParametersToMldev(
 }
 
 export function updateCachedContentConfigToMldev(
-  apiClient: ApiClient,
   fromObject: types.UpdateCachedContentConfig,
   parentObject: Record<string, unknown>,
 ): Record<string, unknown> {
@@ -745,7 +742,7 @@ export function updateCachedContentParametersToMldev(
     common.setValueByPath(
       toObject,
       ['config'],
-      updateCachedContentConfigToMldev(apiClient, fromConfig, toObject),
+      updateCachedContentConfigToMldev(fromConfig, toObject),
     );
   }
 
@@ -753,7 +750,6 @@ export function updateCachedContentParametersToMldev(
 }
 
 export function listCachedContentsConfigToMldev(
-  apiClient: ApiClient,
   fromObject: types.ListCachedContentsConfig,
   parentObject: Record<string, unknown>,
 ): Record<string, unknown> {
@@ -773,7 +769,6 @@ export function listCachedContentsConfigToMldev(
 }
 
 export function listCachedContentsParametersToMldev(
-  apiClient: ApiClient,
   fromObject: types.ListCachedContentsParameters,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -783,7 +778,7 @@ export function listCachedContentsParametersToMldev(
     common.setValueByPath(
       toObject,
       ['config'],
-      listCachedContentsConfigToMldev(apiClient, fromConfig, toObject),
+      listCachedContentsConfigToMldev(fromConfig, toObject),
     );
   }
 
@@ -791,7 +786,6 @@ export function listCachedContentsParametersToMldev(
 }
 
 export function videoMetadataToVertex(
-  apiClient: ApiClient,
   fromObject: types.VideoMetadata,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -814,10 +808,7 @@ export function videoMetadataToVertex(
   return toObject;
 }
 
-export function blobToVertex(
-  apiClient: ApiClient,
-  fromObject: types.Blob,
-): Record<string, unknown> {
+export function blobToVertex(fromObject: types.Blob): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
   const fromDisplayName = common.getValueByPath(fromObject, ['displayName']);
@@ -839,7 +830,6 @@ export function blobToVertex(
 }
 
 export function fileDataToVertex(
-  apiClient: ApiClient,
   fromObject: types.FileData,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -862,10 +852,7 @@ export function fileDataToVertex(
   return toObject;
 }
 
-export function partToVertex(
-  apiClient: ApiClient,
-  fromObject: types.Part,
-): Record<string, unknown> {
+export function partToVertex(fromObject: types.Part): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
   const fromVideoMetadata = common.getValueByPath(fromObject, [
@@ -875,7 +862,7 @@ export function partToVertex(
     common.setValueByPath(
       toObject,
       ['videoMetadata'],
-      videoMetadataToVertex(apiClient, fromVideoMetadata),
+      videoMetadataToVertex(fromVideoMetadata),
     );
   }
 
@@ -889,7 +876,7 @@ export function partToVertex(
     common.setValueByPath(
       toObject,
       ['inlineData'],
-      blobToVertex(apiClient, fromInlineData),
+      blobToVertex(fromInlineData),
     );
   }
 
@@ -898,7 +885,7 @@ export function partToVertex(
     common.setValueByPath(
       toObject,
       ['fileData'],
-      fileDataToVertex(apiClient, fromFileData),
+      fileDataToVertex(fromFileData),
     );
   }
 
@@ -948,7 +935,6 @@ export function partToVertex(
 }
 
 export function contentToVertex(
-  apiClient: ApiClient,
   fromObject: types.Content,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -958,7 +944,7 @@ export function contentToVertex(
     let transformedList = fromParts;
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return partToVertex(apiClient, item);
+        return partToVertex(item);
       });
     }
     common.setValueByPath(toObject, ['parts'], transformedList);
@@ -973,7 +959,6 @@ export function contentToVertex(
 }
 
 export function functionDeclarationToVertex(
-  apiClient: ApiClient,
   fromObject: types.FunctionDeclaration,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -997,16 +982,37 @@ export function functionDeclarationToVertex(
     common.setValueByPath(toObject, ['parameters'], fromParameters);
   }
 
+  const fromParametersJsonSchema = common.getValueByPath(fromObject, [
+    'parametersJsonSchema',
+  ]);
+  if (fromParametersJsonSchema != null) {
+    common.setValueByPath(
+      toObject,
+      ['parametersJsonSchema'],
+      fromParametersJsonSchema,
+    );
+  }
+
   const fromResponse = common.getValueByPath(fromObject, ['response']);
   if (fromResponse != null) {
     common.setValueByPath(toObject, ['response'], fromResponse);
+  }
+
+  const fromResponseJsonSchema = common.getValueByPath(fromObject, [
+    'responseJsonSchema',
+  ]);
+  if (fromResponseJsonSchema != null) {
+    common.setValueByPath(
+      toObject,
+      ['responseJsonSchema'],
+      fromResponseJsonSchema,
+    );
   }
 
   return toObject;
 }
 
 export function intervalToVertex(
-  apiClient: ApiClient,
   fromObject: types.Interval,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1025,7 +1031,6 @@ export function intervalToVertex(
 }
 
 export function googleSearchToVertex(
-  apiClient: ApiClient,
   fromObject: types.GoogleSearch,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1037,7 +1042,7 @@ export function googleSearchToVertex(
     common.setValueByPath(
       toObject,
       ['timeRangeFilter'],
-      intervalToVertex(apiClient, fromTimeRangeFilter),
+      intervalToVertex(fromTimeRangeFilter),
     );
   }
 
@@ -1045,7 +1050,6 @@ export function googleSearchToVertex(
 }
 
 export function dynamicRetrievalConfigToVertex(
-  apiClient: ApiClient,
   fromObject: types.DynamicRetrievalConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1066,7 +1070,6 @@ export function dynamicRetrievalConfigToVertex(
 }
 
 export function googleSearchRetrievalToVertex(
-  apiClient: ApiClient,
   fromObject: types.GoogleSearchRetrieval,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1078,7 +1081,7 @@ export function googleSearchRetrievalToVertex(
     common.setValueByPath(
       toObject,
       ['dynamicRetrievalConfig'],
-      dynamicRetrievalConfigToVertex(apiClient, fromDynamicRetrievalConfig),
+      dynamicRetrievalConfigToVertex(fromDynamicRetrievalConfig),
     );
   }
 
@@ -1092,7 +1095,6 @@ export function enterpriseWebSearchToVertex(): Record<string, unknown> {
 }
 
 export function apiKeyConfigToVertex(
-  apiClient: ApiClient,
   fromObject: types.ApiKeyConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1106,7 +1108,6 @@ export function apiKeyConfigToVertex(
 }
 
 export function authConfigToVertex(
-  apiClient: ApiClient,
   fromObject: types.AuthConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1116,7 +1117,7 @@ export function authConfigToVertex(
     common.setValueByPath(
       toObject,
       ['apiKeyConfig'],
-      apiKeyConfigToVertex(apiClient, fromApiKeyConfig),
+      apiKeyConfigToVertex(fromApiKeyConfig),
     );
   }
 
@@ -1161,7 +1162,6 @@ export function authConfigToVertex(
 }
 
 export function googleMapsToVertex(
-  apiClient: ApiClient,
   fromObject: types.GoogleMaps,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1171,7 +1171,7 @@ export function googleMapsToVertex(
     common.setValueByPath(
       toObject,
       ['authConfig'],
-      authConfigToVertex(apiClient, fromAuthConfig),
+      authConfigToVertex(fromAuthConfig),
     );
   }
 
@@ -1184,10 +1184,7 @@ export function urlContextToVertex(): Record<string, unknown> {
   return toObject;
 }
 
-export function toolToVertex(
-  apiClient: ApiClient,
-  fromObject: types.Tool,
-): Record<string, unknown> {
+export function toolToVertex(fromObject: types.Tool): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
   const fromFunctionDeclarations = common.getValueByPath(fromObject, [
@@ -1197,7 +1194,7 @@ export function toolToVertex(
     let transformedList = fromFunctionDeclarations;
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return functionDeclarationToVertex(apiClient, item);
+        return functionDeclarationToVertex(item);
       });
     }
     common.setValueByPath(toObject, ['functionDeclarations'], transformedList);
@@ -1213,7 +1210,7 @@ export function toolToVertex(
     common.setValueByPath(
       toObject,
       ['googleSearch'],
-      googleSearchToVertex(apiClient, fromGoogleSearch),
+      googleSearchToVertex(fromGoogleSearch),
     );
   }
 
@@ -1224,7 +1221,7 @@ export function toolToVertex(
     common.setValueByPath(
       toObject,
       ['googleSearchRetrieval'],
-      googleSearchRetrievalToVertex(apiClient, fromGoogleSearchRetrieval),
+      googleSearchRetrievalToVertex(fromGoogleSearchRetrieval),
     );
   }
 
@@ -1244,12 +1241,13 @@ export function toolToVertex(
     common.setValueByPath(
       toObject,
       ['googleMaps'],
-      googleMapsToVertex(apiClient, fromGoogleMaps),
+      googleMapsToVertex(fromGoogleMaps),
     );
   }
 
-  if (common.getValueByPath(fromObject, ['urlContext']) !== undefined) {
-    throw new Error('urlContext parameter is not supported in Vertex AI.');
+  const fromUrlContext = common.getValueByPath(fromObject, ['urlContext']);
+  if (fromUrlContext != null) {
+    common.setValueByPath(toObject, ['urlContext'], urlContextToVertex());
   }
 
   const fromCodeExecution = common.getValueByPath(fromObject, [
@@ -1259,11 +1257,15 @@ export function toolToVertex(
     common.setValueByPath(toObject, ['codeExecution'], fromCodeExecution);
   }
 
+  const fromComputerUse = common.getValueByPath(fromObject, ['computerUse']);
+  if (fromComputerUse != null) {
+    common.setValueByPath(toObject, ['computerUse'], fromComputerUse);
+  }
+
   return toObject;
 }
 
 export function functionCallingConfigToVertex(
-  apiClient: ApiClient,
   fromObject: types.FunctionCallingConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1288,7 +1290,6 @@ export function functionCallingConfigToVertex(
 }
 
 export function latLngToVertex(
-  apiClient: ApiClient,
   fromObject: types.LatLng,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1307,18 +1308,13 @@ export function latLngToVertex(
 }
 
 export function retrievalConfigToVertex(
-  apiClient: ApiClient,
   fromObject: types.RetrievalConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
   const fromLatLng = common.getValueByPath(fromObject, ['latLng']);
   if (fromLatLng != null) {
-    common.setValueByPath(
-      toObject,
-      ['latLng'],
-      latLngToVertex(apiClient, fromLatLng),
-    );
+    common.setValueByPath(toObject, ['latLng'], latLngToVertex(fromLatLng));
   }
 
   const fromLanguageCode = common.getValueByPath(fromObject, ['languageCode']);
@@ -1330,7 +1326,6 @@ export function retrievalConfigToVertex(
 }
 
 export function toolConfigToVertex(
-  apiClient: ApiClient,
   fromObject: types.ToolConfig,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1342,7 +1337,7 @@ export function toolConfigToVertex(
     common.setValueByPath(
       toObject,
       ['functionCallingConfig'],
-      functionCallingConfigToVertex(apiClient, fromFunctionCallingConfig),
+      functionCallingConfigToVertex(fromFunctionCallingConfig),
     );
   }
 
@@ -1353,7 +1348,7 @@ export function toolConfigToVertex(
     common.setValueByPath(
       toObject,
       ['retrievalConfig'],
-      retrievalConfigToVertex(apiClient, fromRetrievalConfig),
+      retrievalConfigToVertex(fromRetrievalConfig),
     );
   }
 
@@ -1361,7 +1356,6 @@ export function toolConfigToVertex(
 }
 
 export function createCachedContentConfigToVertex(
-  apiClient: ApiClient,
   fromObject: types.CreateCachedContentConfig,
   parentObject: Record<string, unknown>,
 ): Record<string, unknown> {
@@ -1384,10 +1378,10 @@ export function createCachedContentConfigToVertex(
 
   const fromContents = common.getValueByPath(fromObject, ['contents']);
   if (parentObject !== undefined && fromContents != null) {
-    let transformedList = t.tContents(apiClient, fromContents);
+    let transformedList = t.tContents(fromContents);
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return contentToVertex(apiClient, item);
+        return contentToVertex(item);
       });
     }
     common.setValueByPath(parentObject, ['contents'], transformedList);
@@ -1400,7 +1394,7 @@ export function createCachedContentConfigToVertex(
     common.setValueByPath(
       parentObject,
       ['systemInstruction'],
-      contentToVertex(apiClient, t.tContent(apiClient, fromSystemInstruction)),
+      contentToVertex(t.tContent(fromSystemInstruction)),
     );
   }
 
@@ -1409,7 +1403,7 @@ export function createCachedContentConfigToVertex(
     let transformedList = fromTools;
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return toolToVertex(apiClient, item);
+        return toolToVertex(item);
       });
     }
     common.setValueByPath(parentObject, ['tools'], transformedList);
@@ -1420,7 +1414,7 @@ export function createCachedContentConfigToVertex(
     common.setValueByPath(
       parentObject,
       ['toolConfig'],
-      toolConfigToVertex(apiClient, fromToolConfig),
+      toolConfigToVertex(fromToolConfig),
     );
   }
 
@@ -1456,7 +1450,7 @@ export function createCachedContentParametersToVertex(
     common.setValueByPath(
       toObject,
       ['config'],
-      createCachedContentConfigToVertex(apiClient, fromConfig, toObject),
+      createCachedContentConfigToVertex(fromConfig, toObject),
     );
   }
 
@@ -1510,7 +1504,6 @@ export function deleteCachedContentParametersToVertex(
 }
 
 export function updateCachedContentConfigToVertex(
-  apiClient: ApiClient,
   fromObject: types.UpdateCachedContentConfig,
   parentObject: Record<string, unknown>,
 ): Record<string, unknown> {
@@ -1549,7 +1542,7 @@ export function updateCachedContentParametersToVertex(
     common.setValueByPath(
       toObject,
       ['config'],
-      updateCachedContentConfigToVertex(apiClient, fromConfig, toObject),
+      updateCachedContentConfigToVertex(fromConfig, toObject),
     );
   }
 
@@ -1557,7 +1550,6 @@ export function updateCachedContentParametersToVertex(
 }
 
 export function listCachedContentsConfigToVertex(
-  apiClient: ApiClient,
   fromObject: types.ListCachedContentsConfig,
   parentObject: Record<string, unknown>,
 ): Record<string, unknown> {
@@ -1577,7 +1569,6 @@ export function listCachedContentsConfigToVertex(
 }
 
 export function listCachedContentsParametersToVertex(
-  apiClient: ApiClient,
   fromObject: types.ListCachedContentsParameters,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1587,7 +1578,7 @@ export function listCachedContentsParametersToVertex(
     common.setValueByPath(
       toObject,
       ['config'],
-      listCachedContentsConfigToVertex(apiClient, fromConfig, toObject),
+      listCachedContentsConfigToVertex(fromConfig, toObject),
     );
   }
 
@@ -1595,7 +1586,6 @@ export function listCachedContentsParametersToVertex(
 }
 
 export function cachedContentFromMldev(
-  apiClient: ApiClient,
   fromObject: types.CachedContent,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1650,7 +1640,6 @@ export function deleteCachedContentResponseFromMldev(): Record<
 }
 
 export function listCachedContentsResponseFromMldev(
-  apiClient: ApiClient,
   fromObject: types.ListCachedContentsResponse,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1669,7 +1658,7 @@ export function listCachedContentsResponseFromMldev(
     let transformedList = fromCachedContents;
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return cachedContentFromMldev(apiClient, item);
+        return cachedContentFromMldev(item);
       });
     }
     common.setValueByPath(toObject, ['cachedContents'], transformedList);
@@ -1679,7 +1668,6 @@ export function listCachedContentsResponseFromMldev(
 }
 
 export function cachedContentFromVertex(
-  apiClient: ApiClient,
   fromObject: types.CachedContent,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1734,7 +1722,6 @@ export function deleteCachedContentResponseFromVertex(): Record<
 }
 
 export function listCachedContentsResponseFromVertex(
-  apiClient: ApiClient,
   fromObject: types.ListCachedContentsResponse,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
@@ -1753,7 +1740,7 @@ export function listCachedContentsResponseFromVertex(
     let transformedList = fromCachedContents;
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return cachedContentFromVertex(apiClient, item);
+        return cachedContentFromVertex(item);
       });
     }
     common.setValueByPath(toObject, ['cachedContents'], transformedList);

@@ -5,9 +5,11 @@
  */
 
 export {BaseUrlParameters, setDefaultBaseUrls} from './_base_url';
+export * from './batches';
 export * from './caches';
 export * from './chats';
 export {GoogleGenAI, GoogleGenAIOptions} from './client';
+export * from './errors';
 export {Files} from './files';
 export * from './live';
 export {mcpToTool} from './mcp/_mcp';

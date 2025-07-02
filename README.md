@@ -21,7 +21,21 @@ The Google Gen AI SDK is designed to work with Gemini 2.0 features.
 
 ## Prerequisites
 
-* Node.js version 18 or later
+1. Node.js version 20 or later
+
+### The following are required for Vertex AI users (excluding Vertex AI Studio)
+1.  [Select](https://console.cloud.google.com/project) or [create](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project) a Google Cloud project.
+1.  [Enable billing for your project](https://cloud.google.com/billing/docs/how-to/modify-project).
+1.  [Enable the Vertex AI API](https://console.cloud.google.com/flows/enableapi?apiid=aiplatform.googleapis.com).
+1.  [Configure authentication](https://cloud.google.com/docs/authentication) for your project.
+    *   [Install the gcloud CLI](https://cloud.google.com/sdk/docs/install).
+    *   [Initialize the gcloud CLI](https://cloud.google.com/sdk/docs/initializing).
+    *   Create local authentication credentials for your user account:
+
+    ```sh
+    gcloud auth application-default login
+    ```
+A list of accepted authentication options are listed in [GoogleAuthOptions](https://github.com/googleapis/google-auth-library-nodejs/blob/3ae120d0a45c95e36c59c9ac8286483938781f30/src/auth/googleauth.ts#L87) interface of google-auth-library-node.js GitHub repo.
 
 ## Installation
 
@@ -259,6 +273,49 @@ async function main() {
 }
 
 main();
+```
+
+#### Model Context Protocol (MCP) support (experimental)
+
+Built-in [MCP](https://modelcontextprotocol.io/introduction) support is an
+experimental feature. You can pass a local MCP server as a tool directly.
+
+```javascript
+import { GoogleGenAI, FunctionCallingConfigMode , mcpToTool} from '@google/genai';
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
+// Create server parameters for stdio connection
+const serverParams = new StdioClientTransport({
+  command: "npx", // Executable
+  args: ["-y", "@philschmid/weather-mcp"] // MCP Server
+});
+
+const client = new Client(
+  {
+    name: "example-client",
+    version: "1.0.0"
+  }
+);
+
+// Configure the client
+const ai = new GoogleGenAI({});
+
+// Initialize the connection between client and server
+await client.connect(serverParams);
+
+// Send request to the model with MCP tools
+const response = await ai.models.generateContent({
+  model: "gemini-2.5-flash",
+  contents: `What is the weather in London in ${new Date().toLocaleDateString()}?`,
+  config: {
+    tools: [mcpToTool(client)],  // uses the session, will automatically call the tool using automatic function calling
+  },
+});
+console.log(response.text);
+
+// Close the connection
+await client.close();
 ```
 
 ### Generate Content
