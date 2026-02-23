@@ -222,39 +222,39 @@ export interface CodeExecutionCallArguments {
  * Code execution content.
  */
 export interface CodeExecutionCallContent {
-  type: 'code_execution_call';
-
   /**
    * A unique ID for this specific tool call.
    */
-  id?: string;
+  id: string;
 
   /**
    * The arguments to pass to the code execution.
    */
-  arguments?: CodeExecutionCallArguments;
+  arguments: CodeExecutionCallArguments;
+
+  type: 'code_execution_call';
 }
 
 /**
  * Code execution result content.
  */
 export interface CodeExecutionResultContent {
-  type: 'code_execution_result';
-
   /**
    * ID to match the ID from the code execution call block.
    */
-  call_id?: string;
+  call_id: string;
+
+  /**
+   * The output of the code execution.
+   */
+  result: string;
+
+  type: 'code_execution_result';
 
   /**
    * Whether the code execution resulted in an error.
    */
   is_error?: boolean;
-
-  /**
-   * The output of the code execution.
-   */
-  result?: string;
 
   /**
    * A signature hash for backend validation.
@@ -286,9 +286,7 @@ export type Content =
   | FileSearchResultContent;
 
 export interface ContentDelta {
-  event_type: 'content.delta';
-
-  delta?:
+  delta:
     | ContentDelta.TextDelta
     | ContentDelta.ImageDelta
     | ContentDelta.AudioDelta
@@ -309,24 +307,26 @@ export interface ContentDelta {
     | ContentDelta.FileSearchCallDelta
     | ContentDelta.FileSearchResultDelta;
 
+  event_type: 'content.delta';
+
+  index: number;
+
   /**
    * The event_id token to be used to resume the interaction stream, from this event.
    */
   event_id?: string;
-
-  index?: number;
 }
 
 export namespace ContentDelta {
   export interface TextDelta {
+    text: string;
+
     type: 'text';
 
     /**
      * Citation information for model-generated content.
      */
     annotations?: Array<InteractionsAPI.Annotation>;
-
-    text?: string;
   }
 
   export interface ImageDelta {
@@ -407,34 +407,34 @@ export namespace ContentDelta {
   }
 
   export interface FunctionCallDelta {
-    type: 'function_call';
-
     /**
      * A unique ID for this specific tool call.
      */
-    id?: string;
+    id: string;
 
-    arguments?: { [key: string]: unknown };
+    arguments: { [key: string]: unknown };
 
-    name?: string;
+    name: string;
+
+    type: 'function_call';
   }
 
   export interface FunctionResultDelta {
-    type: 'function_result';
-
     /**
      * ID to match the ID from the function call block.
      */
-    call_id?: string;
-
-    is_error?: boolean;
-
-    name?: string;
+    call_id: string;
 
     /**
      * Tool call result delta.
      */
-    result?: FunctionResultDelta.Items | unknown | string;
+    result: FunctionResultDelta.Items | unknown | string;
+
+    type: 'function_result';
+
+    is_error?: boolean;
+
+    name?: string;
   }
 
   export namespace FunctionResultDelta {
@@ -444,121 +444,121 @@ export namespace ContentDelta {
   }
 
   export interface CodeExecutionCallDelta {
-    type: 'code_execution_call';
-
     /**
      * A unique ID for this specific tool call.
      */
-    id?: string;
+    id: string;
 
     /**
      * The arguments to pass to the code execution.
      */
-    arguments?: InteractionsAPI.CodeExecutionCallArguments;
+    arguments: InteractionsAPI.CodeExecutionCallArguments;
+
+    type: 'code_execution_call';
   }
 
   export interface CodeExecutionResultDelta {
-    type: 'code_execution_result';
-
     /**
      * ID to match the ID from the function call block.
      */
-    call_id?: string;
+    call_id: string;
+
+    result: string;
+
+    type: 'code_execution_result';
 
     is_error?: boolean;
-
-    result?: string;
 
     signature?: string;
   }
 
   export interface URLContextCallDelta {
-    type: 'url_context_call';
-
     /**
      * A unique ID for this specific tool call.
      */
-    id?: string;
+    id: string;
 
     /**
      * The arguments to pass to the URL context.
      */
-    arguments?: InteractionsAPI.URLContextCallArguments;
+    arguments: InteractionsAPI.URLContextCallArguments;
+
+    type: 'url_context_call';
   }
 
   export interface URLContextResultDelta {
-    type: 'url_context_result';
-
     /**
      * ID to match the ID from the function call block.
      */
-    call_id?: string;
+    call_id: string;
+
+    result: Array<InteractionsAPI.URLContextResult>;
+
+    type: 'url_context_result';
 
     is_error?: boolean;
-
-    result?: Array<InteractionsAPI.URLContextResult>;
 
     signature?: string;
   }
 
   export interface GoogleSearchCallDelta {
-    type: 'google_search_call';
-
     /**
      * A unique ID for this specific tool call.
      */
-    id?: string;
+    id: string;
 
     /**
      * The arguments to pass to Google Search.
      */
-    arguments?: InteractionsAPI.GoogleSearchCallArguments;
+    arguments: InteractionsAPI.GoogleSearchCallArguments;
+
+    type: 'google_search_call';
   }
 
   export interface GoogleSearchResultDelta {
-    type: 'google_search_result';
-
     /**
      * ID to match the ID from the function call block.
      */
-    call_id?: string;
+    call_id: string;
+
+    result: Array<InteractionsAPI.GoogleSearchResult>;
+
+    type: 'google_search_result';
 
     is_error?: boolean;
-
-    result?: Array<InteractionsAPI.GoogleSearchResult>;
 
     signature?: string;
   }
 
   export interface MCPServerToolCallDelta {
-    type: 'mcp_server_tool_call';
-
     /**
      * A unique ID for this specific tool call.
      */
-    id?: string;
+    id: string;
 
-    arguments?: { [key: string]: unknown };
+    arguments: { [key: string]: unknown };
 
-    name?: string;
+    name: string;
 
-    server_name?: string;
+    server_name: string;
+
+    type: 'mcp_server_tool_call';
   }
 
   export interface MCPServerToolResultDelta {
-    type: 'mcp_server_tool_result';
-
     /**
      * ID to match the ID from the function call block.
      */
-    call_id?: string;
-
-    name?: string;
+    call_id: string;
 
     /**
      * Tool call result delta.
      */
-    result?: MCPServerToolResultDelta.Items | unknown | string;
+    result: MCPServerToolResultDelta.Items | unknown | string;
+
+    type: 'mcp_server_tool_result';
+
+    name?: string;
 
     server_name?: string;
   }
@@ -570,12 +570,12 @@ export namespace ContentDelta {
   }
 
   export interface FileSearchCallDelta {
-    type: 'file_search_call';
-
     /**
      * A unique ID for this specific tool call.
      */
-    id?: string;
+    id: string;
+
+    type: 'file_search_call';
   }
 
   export interface FileSearchResultDelta {
@@ -608,30 +608,30 @@ export namespace ContentDelta {
 }
 
 export interface ContentStart {
-  event_type: 'content.start';
-
   /**
    * The content of the response.
    */
-  content?: Content;
+  content: Content;
+
+  event_type: 'content.start';
+
+  index: number;
 
   /**
    * The event_id token to be used to resume the interaction stream, from this event.
    */
   event_id?: string;
-
-  index?: number;
 }
 
 export interface ContentStop {
   event_type: 'content.stop';
 
+  index: number;
+
   /**
    * The event_id token to be used to resume the interaction stream, from this event.
    */
   event_id?: string;
-
-  index?: number;
 }
 
 /**
@@ -712,18 +712,23 @@ export namespace ErrorEvent {
  * File Search content.
  */
 export interface FileSearchCallContent {
-  type: 'file_search_call';
-
   /**
    * A unique ID for this specific tool call.
    */
-  id?: string;
+  id: string;
+
+  type: 'file_search_call';
 }
 
 /**
  * File Search result content.
  */
 export interface FileSearchResultContent {
+  /**
+   * ID to match the ID from the file search call block.
+   */
+  call_id: string;
+
   type: 'file_search_result';
 
   /**
@@ -900,17 +905,17 @@ export interface GoogleSearchCallArguments {
  * Google Search content.
  */
 export interface GoogleSearchCallContent {
-  type: 'google_search_call';
-
   /**
    * A unique ID for this specific tool call.
    */
-  id?: string;
+  id: string;
 
   /**
    * The arguments to pass to Google Search.
    */
-  arguments?: GoogleSearchCallArguments;
+  arguments: GoogleSearchCallArguments;
+
+  type: 'google_search_call';
 }
 
 /**
@@ -937,22 +942,22 @@ export interface GoogleSearchResult {
  * Google Search result content.
  */
 export interface GoogleSearchResultContent {
-  type: 'google_search_result';
-
   /**
    * ID to match the ID from the google search call block.
    */
-  call_id?: string;
+  call_id: string;
+
+  /**
+   * The results of the Google Search.
+   */
+  result: Array<GoogleSearchResult>;
+
+  type: 'google_search_result';
 
   /**
    * Whether the Google Search resulted in an error.
    */
   is_error?: boolean;
-
-  /**
-   * The results of the Google Search.
-   */
-  result?: Array<GoogleSearchResult>;
 
   /**
    * The signature of the Google Search result.
@@ -1006,9 +1011,21 @@ export interface Interaction {
   id: string;
 
   /**
+   * Output only. The time at which the response was created in ISO 8601 format
+   * (YYYY-MM-DDThh:mm:ssZ).
+   */
+  created: string;
+
+  /**
    * Output only. The status of the interaction.
    */
   status: 'in_progress' | 'requires_action' | 'completed' | 'failed' | 'cancelled' | 'incomplete';
+
+  /**
+   * Output only. The time at which the response was last updated in ISO 8601 format
+   * (YYYY-MM-DDThh:mm:ssZ).
+   */
+  updated: string;
 
   /**
    * The name of the `Agent` used for generating the interaction.
@@ -1019,12 +1036,6 @@ export interface Interaction {
    * Configuration for the agent.
    */
   agent_config?: DynamicAgentConfig | DeepResearchAgentConfig;
-
-  /**
-   * Output only. The time at which the response was created in ISO 8601 format
-   * (YYYY-MM-DDThh:mm:ssZ).
-   */
-  created?: string;
 
   /**
    * The inputs for the interaction.
@@ -1099,12 +1110,6 @@ export interface Interaction {
   tools?: Array<Tool>;
 
   /**
-   * Output only. The time at which the response was last updated in ISO 8601 format
-   * (YYYY-MM-DDThh:mm:ssZ).
-   */
-  updated?: string;
-
-  /**
    * Output only. Statistics on the interaction request's token usage.
    */
   usage?: Usage;
@@ -1114,14 +1119,14 @@ export interface InteractionCompleteEvent {
   event_type: 'interaction.complete';
 
   /**
+   * The Interaction resource.
+   */
+  interaction: Interaction;
+
+  /**
    * The event_id token to be used to resume the interaction stream, from this event.
    */
   event_id?: string;
-
-  /**
-   * The Interaction resource.
-   */
-  interaction?: Interaction;
 }
 
 export type InteractionSSEEvent =
@@ -1137,27 +1142,27 @@ export interface InteractionStartEvent {
   event_type: 'interaction.start';
 
   /**
+   * The Interaction resource.
+   */
+  interaction: Interaction;
+
+  /**
    * The event_id token to be used to resume the interaction stream, from this event.
    */
   event_id?: string;
-
-  /**
-   * The Interaction resource.
-   */
-  interaction?: Interaction;
 }
 
 export interface InteractionStatusUpdate {
   event_type: 'interaction.status_update';
 
+  interaction_id: string;
+
+  status: 'in_progress' | 'requires_action' | 'completed' | 'failed' | 'cancelled' | 'incomplete';
+
   /**
    * The event_id token to be used to resume the interaction stream, from this event.
    */
   event_id?: string;
-
-  interaction_id?: string;
-
-  status?: 'in_progress' | 'requires_action' | 'completed' | 'failed' | 'cancelled' | 'incomplete';
 }
 
 /**
@@ -1263,17 +1268,17 @@ export interface SpeechConfig {
  * A text content block.
  */
 export interface TextContent {
+  /**
+   * The text content.
+   */
+  text: string;
+
   type: 'text';
 
   /**
    * Citation information for model-generated content.
    */
   annotations?: Array<Annotation>;
-
-  /**
-   * The text content.
-   */
-  text?: string;
 }
 
 export type ThinkingLevel = 'minimal' | 'low' | 'medium' | 'high';
@@ -1438,17 +1443,17 @@ export interface URLContextCallArguments {
  * URL context content.
  */
 export interface URLContextCallContent {
-  type: 'url_context_call';
-
   /**
    * A unique ID for this specific tool call.
    */
-  id?: string;
+  id: string;
 
   /**
    * The arguments to pass to the URL context.
    */
-  arguments?: URLContextCallArguments;
+  arguments: URLContextCallArguments;
+
+  type: 'url_context_call';
 }
 
 /**
@@ -1470,22 +1475,22 @@ export interface URLContextResult {
  * URL context result content.
  */
 export interface URLContextResultContent {
-  type: 'url_context_result';
-
   /**
    * ID to match the ID from the url context call block.
    */
-  call_id?: string;
+  call_id: string;
+
+  /**
+   * The results of the URL context.
+   */
+  result: Array<URLContextResult>;
+
+  type: 'url_context_result';
 
   /**
    * Whether the URL context resulted in an error.
    */
   is_error?: boolean;
-
-  /**
-   * The results of the URL context.
-   */
-  result?: Array<URLContextResult>;
 
   /**
    * The signature of the URL context result.
