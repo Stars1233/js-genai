@@ -1047,10 +1047,41 @@ export interface Interaction {
   agent?: (string & {}) | 'deep-research-pro-preview-12-2025';
 
   /**
+   * Configuration for the agent.
+   */
+  agent_config?: DynamicAgentConfig | DeepResearchAgentConfig;
+
+  /**
    * Output only. The time at which the response was created in ISO 8601 format
    * (YYYY-MM-DDThh:mm:ssZ).
    */
   created?: string;
+
+  /**
+   * The inputs for the interaction.
+   */
+  input?:
+    | string
+    | Array<Content>
+    | Array<Turn>
+    | TextContent
+    | ImageContent
+    | AudioContent
+    | DocumentContent
+    | VideoContent
+    | ThoughtContent
+    | FunctionCallContent
+    | FunctionResultContent
+    | CodeExecutionCallContent
+    | CodeExecutionResultContent
+    | URLContextCallContent
+    | URLContextResultContent
+    | GoogleSearchCallContent
+    | GoogleSearchResultContent
+    | MCPServerToolCallContent
+    | MCPServerToolResultContent
+    | FileSearchCallContent
+    | FileSearchResultContent;
 
   /**
    * The name of the `Model` used for generating the interaction.
@@ -1068,9 +1099,35 @@ export interface Interaction {
   previous_interaction_id?: string;
 
   /**
+   * Enforces that the generated response is a JSON object that complies with
+   * the JSON schema specified in this field.
+   */
+  response_format?: unknown;
+
+  /**
+   * The mime type of the response. This is required if response_format is set.
+   */
+  response_mime_type?: string;
+
+  /**
+   * The requested modalities of the response (TEXT, IMAGE, AUDIO).
+   */
+  response_modalities?: Array<'text' | 'image' | 'audio'>;
+
+  /**
    * Output only. The role of the interaction.
    */
   role?: string;
+
+  /**
+   * System instruction for the interaction.
+   */
+  system_instruction?: string;
+
+  /**
+   * A list of tool declarations the model may call during interaction.
+   */
+  tools?: Array<Tool>;
 
   /**
    * Output only. The time at which the response was last updated in ISO 8601 format
