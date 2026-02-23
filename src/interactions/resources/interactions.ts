@@ -1210,6 +1210,7 @@ export type Model =
   | 'gemini-3-flash-preview'
   | 'gemini-3-pro-image-preview'
   | 'gemini-3-pro-preview'
+  | 'gemini-3.1-pro-preview'
   | (string & {});
 
 /**
