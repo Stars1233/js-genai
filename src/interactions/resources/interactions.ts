@@ -1402,9 +1402,12 @@ export namespace Tool {
   }
 }
 
+/**
+ * The tool choice configuration containing allowed tools.
+ */
 export interface ToolChoiceConfig {
   /**
-   * The configuration for allowed tools.
+   * The allowed tools.
    */
   allowed_tools?: AllowedTools;
 }
