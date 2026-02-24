@@ -48,7 +48,6 @@ export {
   type ThinkingLevel,
   type ThoughtContent,
   type Tool,
-  type ToolChoice,
   type ToolChoiceConfig,
   type ToolChoiceType,
   type Turn,
