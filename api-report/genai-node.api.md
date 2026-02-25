@@ -1705,6 +1705,7 @@ export interface GoogleRpcStatus {
 export interface GoogleSearch {
     blockingConfidence?: PhishBlockThreshold;
     excludeDomains?: string[];
+    searchTypes?: SearchTypes;
     timeRangeFilter?: Interval;
 }
 
@@ -1722,9 +1723,18 @@ export interface GoogleTypeDate {
 
 // @public
 export interface GroundingChunk {
+    image?: GroundingChunkImage;
     maps?: GroundingChunkMaps;
     retrievedContext?: GroundingChunkRetrievedContext;
     web?: GroundingChunkWeb;
+}
+
+// @public
+export interface GroundingChunkImage {
+    domain?: string;
+    imageUri?: string;
+    sourceUri?: string;
+    title?: string;
 }
 
 // @public
@@ -1776,11 +1786,12 @@ export interface GroundingChunkWeb {
     uri?: string;
 }
 
-// @public
+// @public (undocumented)
 export interface GroundingMetadata {
     googleMapsWidgetContextToken?: string;
     groundingChunks?: GroundingChunk[];
     groundingSupports?: GroundingSupport[];
+    imageSearchQueries?: string[];
     retrievalMetadata?: RetrievalMetadata;
     retrievalQueries?: string[];
     searchEntryPoint?: SearchEntryPoint;
@@ -1902,6 +1913,7 @@ export interface ImageConfig {
     outputCompressionQuality?: number;
     outputMimeType?: string;
     personGeneration?: string;
+    prominentPeople?: ProminentPeople;
 }
 
 // @public
@@ -1914,6 +1926,10 @@ export enum ImagePromptLanguage {
     ko = "ko",
     pt = "pt",
     zh = "zh"
+}
+
+// @public
+export interface ImageSearch {
 }
 
 // @public
@@ -2849,6 +2865,13 @@ export interface ProductImage {
 }
 
 // @public
+export enum ProminentPeople {
+    ALLOW_PROMINENT_PEOPLE = "ALLOW_PROMINENT_PEOPLE",
+    BLOCK_PROMINENT_PEOPLE = "BLOCK_PROMINENT_PEOPLE",
+    PROMINENT_PEOPLE_UNSPECIFIED = "PROMINENT_PEOPLE_UNSPECIFIED"
+}
+
+// @public
 export interface RagChunk {
     pageSpan?: RagChunkPageSpan;
     text?: string;
@@ -3131,6 +3154,12 @@ export interface ScribbleImage {
 export interface SearchEntryPoint {
     renderedContent?: string;
     sdkBlob?: string;
+}
+
+// @public
+export interface SearchTypes {
+    imageSearch?: ImageSearch;
+    webSearch?: WebSearch;
 }
 
 // @public
@@ -3872,6 +3901,10 @@ export enum VoiceActivityType {
 export interface VoiceConfig {
     prebuiltVoiceConfig?: PrebuiltVoiceConfig;
     replicatedVoiceConfig?: ReplicatedVoiceConfig;
+}
+
+// @public
+export interface WebSearch {
 }
 
 // @public

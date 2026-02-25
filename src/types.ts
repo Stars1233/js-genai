@@ -102,6 +102,38 @@ export enum Type {
   NULL = 'NULL',
 }
 
+/** Sites with confidence level chosen & above this value will be blocked from the search results. This enum is not supported in Gemini API. */
+export enum PhishBlockThreshold {
+  /**
+   * Defaults to unspecified.
+   */
+  PHISH_BLOCK_THRESHOLD_UNSPECIFIED = 'PHISH_BLOCK_THRESHOLD_UNSPECIFIED',
+  /**
+   * Blocks Low and above confidence URL that is risky.
+   */
+  BLOCK_LOW_AND_ABOVE = 'BLOCK_LOW_AND_ABOVE',
+  /**
+   * Blocks Medium and above confidence URL that is risky.
+   */
+  BLOCK_MEDIUM_AND_ABOVE = 'BLOCK_MEDIUM_AND_ABOVE',
+  /**
+   * Blocks High and above confidence URL that is risky.
+   */
+  BLOCK_HIGH_AND_ABOVE = 'BLOCK_HIGH_AND_ABOVE',
+  /**
+   * Blocks Higher and above confidence URL that is risky.
+   */
+  BLOCK_HIGHER_AND_ABOVE = 'BLOCK_HIGHER_AND_ABOVE',
+  /**
+   * Blocks Very high and above confidence URL that is risky.
+   */
+  BLOCK_VERY_HIGH_AND_ABOVE = 'BLOCK_VERY_HIGH_AND_ABOVE',
+  /**
+   * Blocks Extremely high confidence URL that is risky.
+   */
+  BLOCK_ONLY_EXTREMELY_HIGH = 'BLOCK_ONLY_EXTREMELY_HIGH',
+}
+
 /** The API spec that the external API implements. This enum is not supported in Gemini API. */
 export enum ApiSpec {
   /**
@@ -170,38 +202,6 @@ export enum HttpElementLocation {
    * Element is in the HTTP request cookie.
    */
   HTTP_IN_COOKIE = 'HTTP_IN_COOKIE',
-}
-
-/** Sites with confidence level chosen & above this value will be blocked from the search results. This enum is not supported in Gemini API. */
-export enum PhishBlockThreshold {
-  /**
-   * Defaults to unspecified.
-   */
-  PHISH_BLOCK_THRESHOLD_UNSPECIFIED = 'PHISH_BLOCK_THRESHOLD_UNSPECIFIED',
-  /**
-   * Blocks Low and above confidence URL that is risky.
-   */
-  BLOCK_LOW_AND_ABOVE = 'BLOCK_LOW_AND_ABOVE',
-  /**
-   * Blocks Medium and above confidence URL that is risky.
-   */
-  BLOCK_MEDIUM_AND_ABOVE = 'BLOCK_MEDIUM_AND_ABOVE',
-  /**
-   * Blocks High and above confidence URL that is risky.
-   */
-  BLOCK_HIGH_AND_ABOVE = 'BLOCK_HIGH_AND_ABOVE',
-  /**
-   * Blocks Higher and above confidence URL that is risky.
-   */
-  BLOCK_HIGHER_AND_ABOVE = 'BLOCK_HIGHER_AND_ABOVE',
-  /**
-   * Blocks Very high and above confidence URL that is risky.
-   */
-  BLOCK_VERY_HIGH_AND_ABOVE = 'BLOCK_VERY_HIGH_AND_ABOVE',
-  /**
-   * Blocks Extremely high confidence URL that is risky.
-   */
-  BLOCK_ONLY_EXTREMELY_HIGH = 'BLOCK_ONLY_EXTREMELY_HIGH',
 }
 
 /** Specifies the function Behavior. Currently only supported by the BidiGenerateContent method. This enum is not supported in Vertex AI. */
@@ -784,6 +784,22 @@ export enum Environment {
    * Operates in a web browser.
    */
   ENVIRONMENT_BROWSER = 'ENVIRONMENT_BROWSER',
+}
+
+/** Enum for controlling whether the model can generate images of prominent people (celebrities). */
+export enum ProminentPeople {
+  /**
+   * Unspecified value. The model will proceed with the default behavior, which is to allow generation of prominent people.
+   */
+  PROMINENT_PEOPLE_UNSPECIFIED = 'PROMINENT_PEOPLE_UNSPECIFIED',
+  /**
+   * Allows the model to generate images of prominent people.
+   */
+  ALLOW_PROMINENT_PEOPLE = 'ALLOW_PROMINENT_PEOPLE',
+  /**
+   * Prevents the model from generating images of prominent people.
+   */
+  BLOCK_PROMINENT_PEOPLE = 'BLOCK_PROMINENT_PEOPLE',
 }
 
 /** Enum representing the Vertex embedding API to use. */
@@ -1735,6 +1751,43 @@ export declare interface FileSearch {
   metadataFilter?: string;
 }
 
+/** Standard web search for grounding and related configurations.
+
+Only text results are returned. */
+export declare interface WebSearch {}
+
+/** Image search for grounding and related configurations. */
+export declare interface ImageSearch {}
+
+/** Tool to support computer use. */
+export declare interface SearchTypes {
+  /** Setting this field enables web search. Only text results are
+      returned. */
+  webSearch?: WebSearch;
+  /** Setting this field enables image search. Image bytes are returned. */
+  imageSearch?: ImageSearch;
+}
+
+/** Represents a time interval, encoded as a Timestamp start (inclusive) and a Timestamp end (exclusive). The start must be less than or equal to the end. When the start equals the end, the interval is empty (matches no time). When both start and end are unspecified, the interval matches any time. */
+export declare interface Interval {
+  /** Optional. Exclusive end of the interval. If specified, a Timestamp matching this interval will have to be before the end. */
+  endTime?: string;
+  /** Optional. Inclusive start of the interval. If specified, a Timestamp matching this interval will have to be the same or after the start. */
+  startTime?: string;
+}
+
+/** Tool to support web search. */
+export declare interface GoogleSearch {
+  /** Different types of search that can be enabled on the GoogleSearch tool. */
+  searchTypes?: SearchTypes;
+  /** Optional. List of domains to be excluded from the search results. The default limit is 2000 domains. Example: ["amazon.com", "facebook.com"]. This field is not supported in Gemini API. */
+  excludeDomains?: string[];
+  /** Optional. Sites with confidence level chosen & above this value will be blocked from the search results. This field is not supported in Gemini API. */
+  blockingConfidence?: PhishBlockThreshold;
+  /** Optional. Filter search results to a specific time range. If customers set a start time, they must set an end time (and vice versa). This field is not supported in Vertex AI. */
+  timeRangeFilter?: Interval;
+}
+
 /** The API secret. This data type is not supported in Gemini API. */
 export declare interface ApiAuthApiKeyConfig {
   /** Required. The SecretManager secret version resource name storing API key. e.g. projects/{project}/secrets/{secret}/versions/{version} */
@@ -1977,24 +2030,6 @@ export declare interface GoogleMaps {
   enableWidget?: boolean;
 }
 
-/** Represents a time interval, encoded as a Timestamp start (inclusive) and a Timestamp end (exclusive). The start must be less than or equal to the end. When the start equals the end, the interval is empty (matches no time). When both start and end are unspecified, the interval matches any time. */
-export declare interface Interval {
-  /** Optional. Exclusive end of the interval. If specified, a Timestamp matching this interval will have to be before the end. */
-  endTime?: string;
-  /** Optional. Inclusive start of the interval. If specified, a Timestamp matching this interval will have to be the same or after the start. */
-  startTime?: string;
-}
-
-/** GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google. */
-export declare interface GoogleSearch {
-  /** Optional. List of domains to be excluded from the search results. The default limit is 2000 domains. Example: ["amazon.com", "facebook.com"]. This field is not supported in Gemini API. */
-  excludeDomains?: string[];
-  /** Optional. Sites with confidence level chosen & above this value will be blocked from the search results. This field is not supported in Gemini API. */
-  blockingConfidence?: PhishBlockThreshold;
-  /** Optional. Filter search results to a specific time range. If customers set a start time, they must set an end time (and vice versa). This field is not supported in Vertex AI. */
-  timeRangeFilter?: Interval;
-}
-
 /** Describes the options to customize dynamic retrieval. */
 export declare interface DynamicRetrievalConfig {
   /** Optional. The threshold to be used in dynamic retrieval. If not set, a system default value is used. */
@@ -2044,6 +2079,8 @@ export declare interface Tool {
   computerUse?: ComputerUse;
   /** Optional. Tool to retrieve knowledge from the File Search Stores. */
   fileSearch?: FileSearch;
+  /** Enables the model to execute Google Search as part of generation. */
+  googleSearch?: GoogleSearch;
   /** Optional. CodeExecution tool type. Enables the model to execute code as part of generation. */
   codeExecution?: ToolCodeExecution;
   /** Optional. Tool to support searching public web data, powered by Vertex AI Search and Sec4 compliance. This field is not supported in Gemini API. */
@@ -2052,8 +2089,6 @@ export declare interface Tool {
   functionDeclarations?: FunctionDeclaration[];
   /** Optional. GoogleMaps tool type. Tool to support Google Maps in Model. */
   googleMaps?: GoogleMaps;
-  /** Optional. GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google. */
-  googleSearch?: GoogleSearch;
   /** Optional. Specialized retrieval tool that is powered by Google Search. */
   googleSearchRetrieval?: GoogleSearchRetrieval;
   /** Optional. Tool to support URL context retrieval. */
@@ -2197,6 +2232,12 @@ export declare interface ImageConfig {
   /** Controls the generation of people. Supported values are:
       ALLOW_ALL, ALLOW_ADULT, ALLOW_NONE. */
   personGeneration?: string;
+  /** Controls whether prominent people (celebrities)
+      generation is allowed. If used with personGeneration, personGeneration
+      enum would take precedence. For instance, if ALLOW_NONE is set, all person
+      generation would be blocked. If this field is unspecified, the default
+      behavior is to allow prominent people. */
+  prominentPeople?: ProminentPeople;
   /** MIME type of the generated image. This field is not
       supported in Gemini API. */
   outputMimeType?: string;
@@ -2503,6 +2544,22 @@ export declare interface CitationMetadata {
   citations?: Citation[];
 }
 
+/** A piece of evidence that comes from an image search result.
+
+It contains the URI of the image search result and the URI of the image.
+This is used to provide the user with a link to the source of the
+information. */
+export declare interface GroundingChunkImage {
+  /** The URI of the image search result page. */
+  sourceUri?: string;
+  /** The URI of the image. */
+  imageUri?: string;
+  /** The title of the image search result page. */
+  title?: string;
+  /** The domain of the image search result page. */
+  domain?: string;
+}
+
 /** Author attribution for a photo or review. This data type is not supported in Gemini API. */
 export declare interface GroundingChunkMapsPlaceAnswerSourcesAuthorAttribution {
   /** Name of the author of the Photo or Review. */
@@ -2593,8 +2650,16 @@ export declare interface GroundingChunkWeb {
   uri?: string;
 }
 
-/** Grounding chunk. */
+/** A piece of evidence that supports a claim made by the model.
+
+This is used to show a citation for a claim made by the model. When grounding
+is enabled, the model returns a `GroundingChunk` that contains a reference to
+the source of the information. */
 export declare interface GroundingChunk {
+  /** A grounding chunk from an image search result. See the `Image`
+      message for details.
+       */
+  image?: GroundingChunkImage;
   /** Grounding chunk from Google Maps. This field is not supported in Gemini API. */
   maps?: GroundingChunkMaps;
   /** Grounding chunk from context retrieved by the retrieval tools. This field is not supported in Gemini API. */
@@ -2648,12 +2713,19 @@ export declare interface GroundingMetadataSourceFlaggingUri {
   sourceId?: string;
 }
 
-/** Metadata returned to client when grounding is enabled. */
 export declare interface GroundingMetadata {
+  /** Optional. The image search queries that were used to generate the
+      content. This field is populated only when the grounding source is Google
+      Search with the Image Search search_type enabled.
+       */
+  imageSearchQueries?: string[];
+  /** A list of supporting references retrieved from the grounding
+      source. This field is populated when the grounding source is Google
+      Search, Vertex AI Search, or Google Maps.
+       */
+  groundingChunks?: GroundingChunk[];
   /** Optional. Output only. Resource name of the Google Maps widget context token to be used with the PlacesContextElement widget to render contextual data. This is populated only for Google Maps grounding. This field is not supported in Gemini API. */
   googleMapsWidgetContextToken?: string;
-  /** List of supporting references retrieved from specified grounding source. */
-  groundingChunks?: GroundingChunk[];
   /** Optional. List of grounding support. */
   groundingSupports?: GroundingSupport[];
   /** Optional. Output only. Retrieval metadata. */
@@ -2742,10 +2814,12 @@ export declare interface Candidate {
       If empty, the model has not stopped generating the tokens.
        */
   finishReason?: FinishReason;
+  /** Output only. Metadata returned when grounding is enabled. It
+      contains the sources used to ground the generated content.
+       */
+  groundingMetadata?: GroundingMetadata;
   /** Output only. Average log probability score of the candidate. */
   avgLogprobs?: number;
-  /** Output only. Metadata specifies sources used to ground generated content. */
-  groundingMetadata?: GroundingMetadata;
   /** Output only. Index of the candidate. */
   index?: number;
   /** Output only. Log-likelihood scores for the response tokens and top tokens */

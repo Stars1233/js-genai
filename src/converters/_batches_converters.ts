@@ -460,11 +460,6 @@ export function candidateFromMldev(
     common.setValueByPath(toObject, ['finishReason'], fromFinishReason);
   }
 
-  const fromAvgLogprobs = common.getValueByPath(fromObject, ['avgLogprobs']);
-  if (fromAvgLogprobs != null) {
-    common.setValueByPath(toObject, ['avgLogprobs'], fromAvgLogprobs);
-  }
-
   const fromGroundingMetadata = common.getValueByPath(fromObject, [
     'groundingMetadata',
   ]);
@@ -474,6 +469,11 @@ export function candidateFromMldev(
       ['groundingMetadata'],
       fromGroundingMetadata,
     );
+  }
+
+  const fromAvgLogprobs = common.getValueByPath(fromObject, ['avgLogprobs']);
+  if (fromAvgLogprobs != null) {
+    common.setValueByPath(toObject, ['avgLogprobs'], fromAvgLogprobs);
   }
 
   const fromIndex = common.getValueByPath(fromObject, ['index']);
@@ -1345,6 +1345,11 @@ export function googleSearchToMldev(
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
+  const fromSearchTypes = common.getValueByPath(fromObject, ['searchTypes']);
+  if (fromSearchTypes != null) {
+    common.setValueByPath(toObject, ['searchTypes'], fromSearchTypes);
+  }
+
   if (common.getValueByPath(fromObject, ['excludeDomains']) !== undefined) {
     throw new Error('excludeDomains parameter is not supported in Gemini API.');
   }
@@ -1383,6 +1388,12 @@ export function imageConfigToMldev(
   if (common.getValueByPath(fromObject, ['personGeneration']) !== undefined) {
     throw new Error(
       'personGeneration parameter is not supported in Gemini API.',
+    );
+  }
+
+  if (common.getValueByPath(fromObject, ['prominentPeople']) !== undefined) {
+    throw new Error(
+      'prominentPeople parameter is not supported in Gemini API.',
     );
   }
 
@@ -1776,6 +1787,15 @@ export function toolToMldev(fromObject: types.Tool): Record<string, unknown> {
     common.setValueByPath(toObject, ['fileSearch'], fromFileSearch);
   }
 
+  const fromGoogleSearch = common.getValueByPath(fromObject, ['googleSearch']);
+  if (fromGoogleSearch != null) {
+    common.setValueByPath(
+      toObject,
+      ['googleSearch'],
+      googleSearchToMldev(fromGoogleSearch),
+    );
+  }
+
   const fromCodeExecution = common.getValueByPath(fromObject, [
     'codeExecution',
   ]);
@@ -1810,15 +1830,6 @@ export function toolToMldev(fromObject: types.Tool): Record<string, unknown> {
       toObject,
       ['googleMaps'],
       googleMapsToMldev(fromGoogleMaps),
-    );
-  }
-
-  const fromGoogleSearch = common.getValueByPath(fromObject, ['googleSearch']);
-  if (fromGoogleSearch != null) {
-    common.setValueByPath(
-      toObject,
-      ['googleSearch'],
-      googleSearchToMldev(fromGoogleSearch),
     );
   }
 

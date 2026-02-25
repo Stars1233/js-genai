@@ -213,6 +213,11 @@ export function googleSearchToMldev(
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
+  const fromSearchTypes = common.getValueByPath(fromObject, ['searchTypes']);
+  if (fromSearchTypes != null) {
+    common.setValueByPath(toObject, ['searchTypes'], fromSearchTypes);
+  }
+
   if (common.getValueByPath(fromObject, ['excludeDomains']) !== undefined) {
     throw new Error('excludeDomains parameter is not supported in Gemini API.');
   }
@@ -595,6 +600,15 @@ export function toolToMldev(fromObject: types.Tool): Record<string, unknown> {
     common.setValueByPath(toObject, ['fileSearch'], fromFileSearch);
   }
 
+  const fromGoogleSearch = common.getValueByPath(fromObject, ['googleSearch']);
+  if (fromGoogleSearch != null) {
+    common.setValueByPath(
+      toObject,
+      ['googleSearch'],
+      googleSearchToMldev(fromGoogleSearch),
+    );
+  }
+
   const fromCodeExecution = common.getValueByPath(fromObject, [
     'codeExecution',
   ]);
@@ -629,15 +643,6 @@ export function toolToMldev(fromObject: types.Tool): Record<string, unknown> {
       toObject,
       ['googleMaps'],
       googleMapsToMldev(fromGoogleMaps),
-    );
-  }
-
-  const fromGoogleSearch = common.getValueByPath(fromObject, ['googleSearch']);
-  if (fromGoogleSearch != null) {
-    common.setValueByPath(
-      toObject,
-      ['googleSearch'],
-      googleSearchToMldev(fromGoogleSearch),
     );
   }
 

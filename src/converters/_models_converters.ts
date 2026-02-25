@@ -67,11 +67,6 @@ export function candidateFromMldev(
     common.setValueByPath(toObject, ['finishReason'], fromFinishReason);
   }
 
-  const fromAvgLogprobs = common.getValueByPath(fromObject, ['avgLogprobs']);
-  if (fromAvgLogprobs != null) {
-    common.setValueByPath(toObject, ['avgLogprobs'], fromAvgLogprobs);
-  }
-
   const fromGroundingMetadata = common.getValueByPath(fromObject, [
     'groundingMetadata',
   ]);
@@ -81,6 +76,11 @@ export function candidateFromMldev(
       ['groundingMetadata'],
       fromGroundingMetadata,
     );
+  }
+
+  const fromAvgLogprobs = common.getValueByPath(fromObject, ['avgLogprobs']);
+  if (fromAvgLogprobs != null) {
+    common.setValueByPath(toObject, ['avgLogprobs'], fromAvgLogprobs);
   }
 
   const fromIndex = common.getValueByPath(fromObject, ['index']);
@@ -3498,6 +3498,11 @@ export function googleSearchToMldev(
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
+  const fromSearchTypes = common.getValueByPath(fromObject, ['searchTypes']);
+  if (fromSearchTypes != null) {
+    common.setValueByPath(toObject, ['searchTypes'], fromSearchTypes);
+  }
+
   if (common.getValueByPath(fromObject, ['excludeDomains']) !== undefined) {
     throw new Error('excludeDomains parameter is not supported in Gemini API.');
   }
@@ -3540,6 +3545,12 @@ export function imageConfigToMldev(
     );
   }
 
+  if (common.getValueByPath(fromObject, ['prominentPeople']) !== undefined) {
+    throw new Error(
+      'prominentPeople parameter is not supported in Gemini API.',
+    );
+  }
+
   if (common.getValueByPath(fromObject, ['outputMimeType']) !== undefined) {
     throw new Error('outputMimeType parameter is not supported in Gemini API.');
   }
@@ -3577,6 +3588,13 @@ export function imageConfigToVertex(
   ]);
   if (fromPersonGeneration != null) {
     common.setValueByPath(toObject, ['personGeneration'], fromPersonGeneration);
+  }
+
+  const fromProminentPeople = common.getValueByPath(fromObject, [
+    'prominentPeople',
+  ]);
+  if (fromProminentPeople != null) {
+    common.setValueByPath(toObject, ['prominentPeople'], fromProminentPeople);
   }
 
   const fromOutputMimeType = common.getValueByPath(fromObject, [
@@ -4743,6 +4761,15 @@ export function toolToMldev(
     common.setValueByPath(toObject, ['fileSearch'], fromFileSearch);
   }
 
+  const fromGoogleSearch = common.getValueByPath(fromObject, ['googleSearch']);
+  if (fromGoogleSearch != null) {
+    common.setValueByPath(
+      toObject,
+      ['googleSearch'],
+      googleSearchToMldev(fromGoogleSearch, rootObject),
+    );
+  }
+
   const fromCodeExecution = common.getValueByPath(fromObject, [
     'codeExecution',
   ]);
@@ -4777,15 +4804,6 @@ export function toolToMldev(
       toObject,
       ['googleMaps'],
       googleMapsToMldev(fromGoogleMaps, rootObject),
-    );
-  }
-
-  const fromGoogleSearch = common.getValueByPath(fromObject, ['googleSearch']);
-  if (fromGoogleSearch != null) {
-    common.setValueByPath(
-      toObject,
-      ['googleSearch'],
-      googleSearchToMldev(fromGoogleSearch, rootObject),
     );
   }
 
@@ -4839,6 +4857,11 @@ export function toolToVertex(
     throw new Error('fileSearch parameter is not supported in Vertex AI.');
   }
 
+  const fromGoogleSearch = common.getValueByPath(fromObject, ['googleSearch']);
+  if (fromGoogleSearch != null) {
+    common.setValueByPath(toObject, ['googleSearch'], fromGoogleSearch);
+  }
+
   const fromCodeExecution = common.getValueByPath(fromObject, [
     'codeExecution',
   ]);
@@ -4873,11 +4896,6 @@ export function toolToVertex(
   const fromGoogleMaps = common.getValueByPath(fromObject, ['googleMaps']);
   if (fromGoogleMaps != null) {
     common.setValueByPath(toObject, ['googleMaps'], fromGoogleMaps);
-  }
-
-  const fromGoogleSearch = common.getValueByPath(fromObject, ['googleSearch']);
-  if (fromGoogleSearch != null) {
-    common.setValueByPath(toObject, ['googleSearch'], fromGoogleSearch);
   }
 
   const fromGoogleSearchRetrieval = common.getValueByPath(fromObject, [
