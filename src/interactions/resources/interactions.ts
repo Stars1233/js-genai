@@ -1138,7 +1138,8 @@ export interface InteractionCompleteEvent {
   event_type: 'interaction.complete';
 
   /**
-   * The Interaction resource.
+   * The completed interaction with empty outputs to reduce the payload size.
+   * Use the preceding ContentDelta events for the actual output.
    */
   interaction: Interaction;
 
