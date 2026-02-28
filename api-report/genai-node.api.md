@@ -37,6 +37,38 @@ export enum AdapterSize {
 }
 
 // @public
+export enum AggregationMetric {
+    AGGREGATION_METRIC_UNSPECIFIED = "AGGREGATION_METRIC_UNSPECIFIED",
+    AVERAGE = "AVERAGE",
+    MAXIMUM = "MAXIMUM",
+    MEDIAN = "MEDIAN",
+    MINIMUM = "MINIMUM",
+    MODE = "MODE",
+    PERCENTILE_P90 = "PERCENTILE_P90",
+    PERCENTILE_P95 = "PERCENTILE_P95",
+    PERCENTILE_P99 = "PERCENTILE_P99",
+    STANDARD_DEVIATION = "STANDARD_DEVIATION",
+    VARIANCE = "VARIANCE"
+}
+
+// @public
+export interface AggregationOutput {
+    aggregationResults?: AggregationResult[];
+    dataset?: EvaluationDataset;
+}
+
+// @public
+export interface AggregationResult {
+    aggregationMetric?: AggregationMetric;
+    bleuMetricValue?: BleuMetricValue;
+    customCodeExecutionResult?: CustomCodeExecutionResult;
+    exactMatchMetricValue?: ExactMatchMetricValue;
+    pairwiseMetricResult?: PairwiseMetricResult;
+    pointwiseMetricResult?: PointwiseMetricResult;
+    rougeMetricValue?: RougeMetricValue;
+}
+
+// @public
 export interface ApiAuth {
     apiKeyConfig?: ApiAuthApiKeyConfig;
 }
@@ -87,6 +119,7 @@ export interface AudioTranscriptionConfig {
 
 // @public
 export interface AuthConfig {
+    apiKey?: string;
     apiKeyConfig?: ApiKeyConfig;
     authType?: AuthType;
     googleServiceAccountConfig?: AuthConfigGoogleServiceAccountConfig;
@@ -219,6 +252,16 @@ export enum Behavior {
     BLOCKING = "BLOCKING",
     NON_BLOCKING = "NON_BLOCKING",
     UNSPECIFIED = "UNSPECIFIED"
+}
+
+// @public
+export interface BigQuerySource {
+    inputUri?: string;
+}
+
+// @public
+export interface BleuMetricValue {
+    score?: number;
 }
 
 // @public
@@ -685,11 +728,21 @@ export interface CreateTuningJobParametersPrivate {
 export function createUserContent(partOrString: PartListUnion | string): Content;
 
 // @public
+export interface CustomCodeExecutionResult {
+    score?: number;
+}
+
+// @public
 export interface CustomMetadata {
     key?: string;
     numericValue?: number;
     stringListValue?: StringList;
     stringValue?: string;
+}
+
+// @public
+export interface CustomOutput {
+    rawOutputs?: RawOutput;
 }
 
 // @public
@@ -713,6 +766,8 @@ export interface DatasetDistributionDistributionBucket {
 
 // @public
 export interface DatasetStats {
+    droppedExampleIndices?: string[];
+    droppedExampleReasons?: string[];
     totalBillableCharacterCount?: string;
     totalTuningCharacterCount?: string;
     tuningDatasetExampleCount?: string;
@@ -1052,6 +1107,32 @@ export enum Environment {
 }
 
 // @public
+export class EvaluateDatasetResponse {
+    aggregationOutput?: AggregationOutput;
+    outputInfo?: OutputInfo;
+}
+
+// @public
+export interface EvaluateDatasetRun {
+    checkpointId?: string;
+    error?: GoogleRpcStatus;
+    evaluateDatasetResponse?: EvaluateDatasetResponse;
+    evaluationRun?: string;
+    operationName?: string;
+}
+
+// @public
+export interface EvaluationDataset {
+    bigquerySource?: BigQuerySource;
+    gcsSource?: GcsSource;
+}
+
+// @public
+export interface ExactMatchMetricValue {
+    score?: number;
+}
+
+// @public
 export interface ExecutableCode {
     code?: string;
     language?: Language;
@@ -1215,6 +1296,13 @@ export enum FinishReason {
 }
 
 // @public
+export interface FullFineTuningSpec {
+    hyperParameters?: SupervisedHyperParameters;
+    trainingDatasetUri?: string;
+    validationDatasetUri?: string;
+}
+
+// @public
 export interface FunctionCall {
     args?: Record<string, unknown>;
     id?: string;
@@ -1286,6 +1374,11 @@ export enum FunctionResponseScheduling {
     SCHEDULING_UNSPECIFIED = "SCHEDULING_UNSPECIFIED",
     SILENT = "SILENT",
     WHEN_IDLE = "WHEN_IDLE"
+}
+
+// @public
+export interface GcsSource {
+    uris?: string[];
 }
 
 // @public
@@ -1749,6 +1842,7 @@ export interface GroundingChunkMaps {
 // @public
 export interface GroundingChunkMapsPlaceAnswerSources {
     flagContentUri?: string;
+    reviewSnippet?: GroundingChunkMapsPlaceAnswerSourcesReviewSnippet[];
     reviewSnippets?: GroundingChunkMapsPlaceAnswerSourcesReviewSnippet[];
 }
 
@@ -1786,7 +1880,7 @@ export interface GroundingChunkWeb {
     uri?: string;
 }
 
-// @public (undocumented)
+// @public
 export interface GroundingMetadata {
     googleMapsWidgetContextToken?: string;
     groundingChunks?: GroundingChunk[];
@@ -1909,11 +2003,18 @@ export { Image_2 as Image }
 // @public
 export interface ImageConfig {
     aspectRatio?: string;
+    imageOutputOptions?: ImageConfigImageOutputOptions;
     imageSize?: string;
     outputCompressionQuality?: number;
     outputMimeType?: string;
     personGeneration?: string;
     prominentPeople?: ProminentPeople;
+}
+
+// @public
+export interface ImageConfigImageOutputOptions {
+    compressionQuality?: number;
+    mimeType?: string;
 }
 
 // @public
@@ -2703,6 +2804,11 @@ export enum Outcome {
     OUTCOME_UNSPECIFIED = "OUTCOME_UNSPECIFIED"
 }
 
+// @public
+export interface OutputInfo {
+    gcsOutputDirectory?: string;
+}
+
 // @public (undocumented)
 export enum PagedItem {
     // (undocumented)
@@ -2741,6 +2847,21 @@ export class Pager<T> implements AsyncIterable<T> {
     // (undocumented)
     protected requestInternal: (params: PagedItemConfig) => Promise<PagedItemResponse<T>>;
     get sdkHttpResponse(): types.HttpResponse | undefined;
+}
+
+// @public
+export enum PairwiseChoice {
+    BASELINE = "BASELINE",
+    CANDIDATE = "CANDIDATE",
+    PAIRWISE_CHOICE_UNSPECIFIED = "PAIRWISE_CHOICE_UNSPECIFIED",
+    TIE = "TIE"
+}
+
+// @public
+export interface PairwiseMetricResult {
+    customOutput?: CustomOutput;
+    explanation?: string;
+    pairwiseChoice?: PairwiseChoice;
 }
 
 // @public
@@ -2815,12 +2936,21 @@ export enum PhishBlockThreshold {
 }
 
 // @public
+export interface PointwiseMetricResult {
+    customOutput?: CustomOutput;
+    explanation?: string;
+    score?: number;
+}
+
+// @public
 export interface PrebuiltVoiceConfig {
     voiceName?: string;
 }
 
 // @public
 export interface PreferenceOptimizationDataStats {
+    droppedExampleIndices?: string[];
+    droppedExampleReasons?: string[];
     scoresDistribution?: DatasetDistribution;
     scoreVariancePerExampleDistribution?: DatasetDistribution;
     totalBillableTokenCount?: string;
@@ -2917,6 +3047,11 @@ export interface RagRetrievalConfigRankingLlmRanker {
 // @public
 export interface RagRetrievalConfigRankingRankService {
     modelName?: string;
+}
+
+// @public
+export interface RawOutput {
+    rawOutput?: string[];
 }
 
 // @public
@@ -3060,6 +3195,11 @@ export interface RetrievalConfig {
 // @public
 export interface RetrievalMetadata {
     googleSearchDynamicRetrievalScore?: number;
+}
+
+// @public
+export interface RougeMetricValue {
+    score?: number;
 }
 
 // @public
@@ -3449,6 +3589,7 @@ export interface Tool {
     googleSearch?: GoogleSearch;
     googleSearchRetrieval?: GoogleSearchRetrieval;
     mcpServers?: McpServer[];
+    parallelAiSearch?: ToolParallelAiSearch;
     retrieval?: Retrieval;
     urlContext?: UrlContext;
 }
@@ -3466,12 +3607,20 @@ export interface ToolConfig {
 // @public (undocumented)
 export type ToolListUnion = ToolUnion[];
 
+// @public
+export interface ToolParallelAiSearch {
+    apiKey?: string;
+    customConfigs?: Record<string, unknown>;
+}
+
 // @public (undocumented)
 export type ToolUnion = Tool | CallableTool;
 
 // @public
 export enum TrafficType {
     ON_DEMAND = "ON_DEMAND",
+    ON_DEMAND_FLEX = "ON_DEMAND_FLEX",
+    ON_DEMAND_PRIORITY = "ON_DEMAND_PRIORITY",
     PROVISIONED_THROUGHPUT = "PROVISIONED_THROUGHPUT",
     TRAFFIC_TYPE_UNSPECIFIED = "TRAFFIC_TYPE_UNSPECIFIED"
 }
@@ -3534,7 +3683,9 @@ export interface TuningJob {
     encryptionSpec?: EncryptionSpec;
     endTime?: string;
     error?: GoogleRpcStatus;
+    evaluateDatasetRuns?: EvaluateDatasetRun[];
     experiment?: string;
+    fullFineTuningSpec?: FullFineTuningSpec;
     labels?: Record<string, string>;
     name?: string;
     outputUri?: string;
@@ -3550,8 +3701,19 @@ export interface TuningJob {
     tunedModel?: TunedModel;
     tunedModelDisplayName?: string;
     tuningDataStats?: TuningDataStats;
+    tuningJobState?: TuningJobState;
     updateTime?: string;
     veoTuningSpec?: VeoTuningSpec;
+}
+
+// @public
+export enum TuningJobState {
+    TUNING_JOB_STATE_POST_PROCESSING = "TUNING_JOB_STATE_POST_PROCESSING",
+    TUNING_JOB_STATE_PROCESSING_DATASET = "TUNING_JOB_STATE_PROCESSING_DATASET",
+    TUNING_JOB_STATE_TUNING = "TUNING_JOB_STATE_TUNING",
+    TUNING_JOB_STATE_UNSPECIFIED = "TUNING_JOB_STATE_UNSPECIFIED",
+    TUNING_JOB_STATE_WAITING_FOR_CAPACITY = "TUNING_JOB_STATE_WAITING_FOR_CAPACITY",
+    TUNING_JOB_STATE_WAITING_FOR_QUOTA = "TUNING_JOB_STATE_WAITING_FOR_QUOTA"
 }
 
 // @public
@@ -3794,6 +3956,7 @@ export interface VeoHyperParameters {
     epochCount?: string;
     learningRateMultiplier?: number;
     tuningTask?: TuningTask;
+    veoDataMixtureRatio?: number;
 }
 
 // @public
