@@ -219,7 +219,7 @@ export interface AudioResponseFormat {
    * Bit rate in bits per second (bps). Only applicable for compressed formats (MP3,
    * Opus).
    */
-  bitRate?: number;
+  bit_rate?: number;
 
   /**
    * The delivery mode for the audio output.
@@ -229,12 +229,12 @@ export interface AudioResponseFormat {
   /**
    * The MIME type of the audio output.
    */
-  mimeType?: 'audio/mp3' | 'audio/ogg_opus' | 'audio/l16' | 'audio/wav' | 'audio/alaw' | 'audio/mulaw';
+  mime_type?: 'audio/mp3' | 'audio/ogg_opus' | 'audio/l16' | 'audio/wav' | 'audio/alaw' | 'audio/mulaw';
 
   /**
    * Sample rate in Hz.
    */
-  sampleRate?: number;
+  sample_rate?: number;
 }
 
 /**
@@ -965,7 +965,7 @@ export interface ImageResponseFormat {
   /**
    * The aspect ratio for the image output.
    */
-  aspectRatio?:
+  aspect_ratio?:
     | '1:1'
     | '2:3'
     | '3:2'
@@ -989,12 +989,12 @@ export interface ImageResponseFormat {
   /**
    * The size of the image output.
    */
-  imageSize?: '512' | '1K' | '2K' | '4K';
+  image_size?: '512' | '1K' | '2K' | '4K';
 
   /**
    * The MIME type of the image output.
    */
-  mimeType?: 'image/jpeg';
+  mime_type?: 'image/jpeg';
 }
 
 /**
@@ -1584,7 +1584,7 @@ export interface TextResponseFormat {
   /**
    * The MIME type of the text output.
    */
-  mimeType?: 'application/json' | 'text/plain';
+  mime_type?: 'application/json' | 'text/plain';
 
   /**
    * The JSON schema that the output should conform to. Only applicable when
@@ -1655,7 +1655,7 @@ export namespace Tool {
     /**
      * The list of predefined functions that are excluded from the model call.
      */
-    excludedPredefinedFunctions?: Array<string>;
+    excluded_predefined_functions?: Array<string>;
   }
 
   /**
