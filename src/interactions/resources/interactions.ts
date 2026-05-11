@@ -242,7 +242,7 @@ export interface AudioResponseFormat {
   /**
    * The delivery mode for the audio output.
    */
-  delivery?: 'inline' | 'url';
+  delivery?: 'inline' | 'uri';
 
   /**
    * The MIME type of the audio output.
@@ -1002,7 +1002,7 @@ export interface ImageResponseFormat {
   /**
    * The delivery mode for the image output.
    */
-  delivery?: 'inline' | 'url';
+  delivery?: 'inline' | 'uri';
 
   /**
    * The size of the image output.
@@ -2127,6 +2127,27 @@ export interface VideoContent {
  */
 export interface VideoResponseFormat {
   type: 'video';
+
+  /**
+   * The aspect ratio for the video output.
+   */
+  aspectRatio?: '16:9' | '9:16';
+
+  /**
+   * The delivery mode for the video output.
+   */
+  delivery?: 'inline' | 'uri';
+
+  /**
+   * The duration for the video output.
+   */
+  duration?: string;
+
+  /**
+   * The GCS URI to store the video output. Required for Vertex if delivery mode is
+   * URI.
+   */
+  gcsUri?: string;
 }
 
 /**
