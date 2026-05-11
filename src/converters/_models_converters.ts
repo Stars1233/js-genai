@@ -1413,63 +1413,6 @@ export function functionCallingConfigToMldev(
   return toObject;
 }
 
-export function functionDeclarationToVertex(
-  fromObject: types.FunctionDeclaration,
-  _rootObject?: unknown,
-): Record<string, unknown> {
-  const toObject: Record<string, unknown> = {};
-
-  const fromDescription = common.getValueByPath(fromObject, ['description']);
-  if (fromDescription != null) {
-    common.setValueByPath(toObject, ['description'], fromDescription);
-  }
-
-  const fromName = common.getValueByPath(fromObject, ['name']);
-  if (fromName != null) {
-    common.setValueByPath(toObject, ['name'], fromName);
-  }
-
-  const fromParameters = common.getValueByPath(fromObject, ['parameters']);
-  if (fromParameters != null) {
-    common.setValueByPath(toObject, ['parameters'], fromParameters);
-  }
-
-  const fromParametersJsonSchema = common.getValueByPath(fromObject, [
-    'parametersJsonSchema',
-  ]);
-  if (fromParametersJsonSchema != null) {
-    common.setValueByPath(
-      toObject,
-      ['parametersJsonSchema'],
-      fromParametersJsonSchema,
-    );
-  }
-
-  const fromResponse = common.getValueByPath(fromObject, ['response']);
-  if (fromResponse != null) {
-    common.setValueByPath(toObject, ['response'], fromResponse);
-  }
-
-  const fromResponseJsonSchema = common.getValueByPath(fromObject, [
-    'responseJsonSchema',
-  ]);
-  if (fromResponseJsonSchema != null) {
-    common.setValueByPath(
-      toObject,
-      ['responseJsonSchema'],
-      fromResponseJsonSchema,
-    );
-  }
-
-  if (common.getValueByPath(fromObject, ['behavior']) !== undefined) {
-    throw new Error(
-      'behavior parameter is not supported in Gemini Enterprise Agent Platform (previously known as Vertex AI).',
-    );
-  }
-
-  return toObject;
-}
-
 export function generateContentConfigToMldev(
   apiClient: ApiClient,
   fromObject: types.GenerateContentConfig,
@@ -5220,7 +5163,7 @@ export function toolToMldev(
 
 export function toolToVertex(
   fromObject: types.Tool,
-  rootObject?: unknown,
+  _rootObject?: unknown,
 ): Record<string, unknown> {
   const toObject: Record<string, unknown> = {};
 
@@ -5275,7 +5218,7 @@ export function toolToVertex(
     let transformedList = fromFunctionDeclarations;
     if (Array.isArray(transformedList)) {
       transformedList = transformedList.map((item) => {
-        return functionDeclarationToVertex(item, rootObject);
+        return item;
       });
     }
     common.setValueByPath(toObject, ['functionDeclarations'], transformedList);
