@@ -1170,6 +1170,17 @@ export function liveConnectConfigToMldev(
     );
   }
 
+  const fromStreamTranslationConfig = common.getValueByPath(fromObject, [
+    'streamTranslationConfig',
+  ]);
+  if (parentObject !== undefined && fromStreamTranslationConfig != null) {
+    common.setValueByPath(
+      parentObject,
+      ['setup', 'generationConfig', 'streamTranslationConfig'],
+      fromStreamTranslationConfig,
+    );
+  }
+
   return toObject;
 }
 
@@ -1410,6 +1421,14 @@ export function liveConnectConfigToVertex(
       parentObject,
       ['setup', 'safetySettings'],
       transformedList,
+    );
+  }
+
+  if (
+    common.getValueByPath(fromObject, ['streamTranslationConfig']) !== undefined
+  ) {
+    throw new Error(
+      'streamTranslationConfig parameter is only supported in Gemini Developer API mode, not in Gemini Enterprise Agent Platform mode.',
     );
   }
 
