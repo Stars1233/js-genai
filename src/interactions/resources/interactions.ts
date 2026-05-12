@@ -1415,7 +1415,8 @@ export interface StepDelta {
     | StepDelta.GoogleSearchResult
     | StepDelta.MCPServerToolResult
     | StepDelta.FileSearchResult
-    | StepDelta.GoogleMapsResult;
+    | StepDelta.GoogleMapsResult
+    | StepDelta.FunctionResult;
 
   event_type: 'step.delta';
 
@@ -1557,6 +1558,8 @@ export namespace StepDelta {
 
   export interface ArgumentsDelta {
     type: 'arguments_delta';
+
+    arguments?: string;
   }
 
   export interface CodeExecutionCall {
@@ -1716,6 +1719,21 @@ export namespace StepDelta {
      * A signature hash for backend validation.
      */
     signature?: string;
+  }
+
+  export interface FunctionResult {
+    /**
+     * Required. ID to match the ID from the function call block.
+     */
+    call_id: string;
+
+    result: unknown | Array<InteractionsAPI.TextContent | InteractionsAPI.ImageContent> | string;
+
+    type: 'function_result';
+
+    is_error?: boolean;
+
+    name?: string;
   }
 }
 
