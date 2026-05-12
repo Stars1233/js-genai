@@ -1557,8 +1557,6 @@ export namespace StepDelta {
 
   export interface ArgumentsDelta {
     type: 'arguments_delta';
-
-    partial_arguments?: string;
   }
 
   export interface CodeExecutionCall {
