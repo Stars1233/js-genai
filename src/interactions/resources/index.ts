@@ -69,7 +69,6 @@ export {
   type Usage,
   type UserInputStep,
   type VideoContent,
-  type VideoResponseFormat,
   type WebhookConfig,
   type InteractionDeleteResponse,
   type InteractionCreateParams,

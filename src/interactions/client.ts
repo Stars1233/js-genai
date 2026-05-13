@@ -95,7 +95,6 @@ import {
   Usage,
   UserInputStep,
   VideoContent,
-  VideoResponseFormat,
   WebhookConfig,
 } from './resources/interactions.js';
 import {
@@ -937,7 +936,6 @@ export declare namespace GeminiNextGenAPIClient {
     type Usage as Usage,
     type UserInputStep as UserInputStep,
     type VideoContent as VideoContent,
-    type VideoResponseFormat as VideoResponseFormat,
     type WebhookConfig as WebhookConfig,
     type InteractionDeleteResponse as InteractionDeleteResponse,
     type InteractionCreateParams as InteractionCreateParams,

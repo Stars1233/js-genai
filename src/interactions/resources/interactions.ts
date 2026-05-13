@@ -1088,11 +1088,10 @@ export interface Interaction {
    * JSON schema specified in this field.
    */
   response_format?:
-    | Array<AudioResponseFormat | TextResponseFormat | ImageResponseFormat | VideoResponseFormat | unknown>
+    | Array<AudioResponseFormat | TextResponseFormat | ImageResponseFormat | unknown>
     | AudioResponseFormat
     | TextResponseFormat
     | ImageResponseFormat
-    | VideoResponseFormat
     | unknown;
 
   /**
@@ -2311,34 +2310,6 @@ export interface VideoContent {
 }
 
 /**
- * Configuration for video output format.
- */
-export interface VideoResponseFormat {
-  type: 'video';
-
-  /**
-   * The aspect ratio for the video output.
-   */
-  aspectRatio?: '16:9' | '9:16';
-
-  /**
-   * The delivery mode for the video output.
-   */
-  delivery?: 'inline' | 'uri';
-
-  /**
-   * The duration for the video output.
-   */
-  duration?: string;
-
-  /**
-   * The GCS URI to store the video output. Required for Vertex if delivery mode is
-   * URI.
-   */
-  gcsUri?: string;
-}
-
-/**
  * Message for configuring webhook events for a request.
  */
 export interface WebhookConfig {
@@ -2407,11 +2378,10 @@ export interface BaseCreateModelInteractionParams {
    * with the JSON schema specified in this field.
    */
   response_format?:
-    | Array<AudioResponseFormat | TextResponseFormat | ImageResponseFormat | VideoResponseFormat | unknown>
+    | Array<AudioResponseFormat | TextResponseFormat | ImageResponseFormat | unknown>
     | AudioResponseFormat
     | TextResponseFormat
     | ImageResponseFormat
-    | VideoResponseFormat
     | unknown;
 
   /**
@@ -2506,11 +2476,10 @@ export interface BaseCreateAgentInteractionParams {
    * with the JSON schema specified in this field.
    */
   response_format?:
-    | Array<AudioResponseFormat | TextResponseFormat | ImageResponseFormat | VideoResponseFormat | unknown>
+    | Array<AudioResponseFormat | TextResponseFormat | ImageResponseFormat | unknown>
     | AudioResponseFormat
     | TextResponseFormat
     | ImageResponseFormat
-    | VideoResponseFormat
     | unknown;
 
   /**
@@ -2709,7 +2678,6 @@ export declare namespace Interactions {
     type Usage as Usage,
     type UserInputStep as UserInputStep,
     type VideoContent as VideoContent,
-    type VideoResponseFormat as VideoResponseFormat,
     type WebhookConfig as WebhookConfig,
     type InteractionDeleteResponse as InteractionDeleteResponse,
     type InteractionCreateParams as InteractionCreateParams,
