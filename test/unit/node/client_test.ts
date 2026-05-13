@@ -25,6 +25,15 @@ describe('Client', () => {
     setDefaultBaseUrls({});
   });
   afterEach(() => {
+    delete process.env['GOOGLE_API_KEY'];
+    delete process.env['GEMINI_API_KEY'];
+    delete process.env['GOOGLE_GENAI_USE_ENTERPRISE'];
+    delete process.env['GOOGLE_GENAI_USE_VERTEXAI'];
+    delete process.env['GOOGLE_CLOUD_PROJECT'];
+    delete process.env['GOOGLE_CLOUD_LOCATION'];
+    delete process.env['GOOGLE_GEMINI_BASE_URL'];
+    delete process.env['GOOGLE_VERTEX_BASE_URL'];
+
     setDefaultBaseUrls({});
   });
 
