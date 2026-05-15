@@ -2,6 +2,13 @@
 
 
 
+## [2.3.0](https://github.com/googleapis/js-genai/compare/v2.2.0...v2.3.0) (2026-05-15)
+
+
+### Features
+
+* interaction.{output_text,output_image,output_audio,output_video} ([0188233](https://github.com/googleapis/js-genai/commit/0188233bc1a18033f0a2a8bb228c04181a05dbad))
+
 ## [2.2.0](https://github.com/googleapis/js-genai/compare/v2.1.0...v2.2.0) (2026-05-12)
 
 
