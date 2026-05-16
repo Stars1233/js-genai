@@ -672,7 +672,7 @@ export interface FunctionResultStep {
  */
 export interface GenerationConfig {
   /**
-   * Configuration for image interaction.
+   * @deprecated Configuration for image interaction.
    */
   image_config?: ImageConfig;
 
@@ -1171,7 +1171,8 @@ export interface Interaction {
     | unknown;
 
   /**
-   * The mime type of the response. This is required if response_format is set.
+   * @deprecated The mime type of the response. This is required if response_format
+   * is set.
    */
   response_mime_type?: string;
 
@@ -2489,8 +2490,8 @@ export interface BaseCreateModelInteractionParams {
     | unknown;
 
   /**
-   * Body param: The mime type of the response. This is required if response_format
-   * is set.
+   * @deprecated Body param: The mime type of the response. This is required if
+   * response_format is set.
    */
   response_mime_type?: string;
 
@@ -2587,8 +2588,8 @@ export interface BaseCreateAgentInteractionParams {
     | unknown;
 
   /**
-   * Body param: The mime type of the response. This is required if response_format
-   * is set.
+   * @deprecated Body param: The mime type of the response. This is required if
+   * response_format is set.
    */
   response_mime_type?: string;
 
