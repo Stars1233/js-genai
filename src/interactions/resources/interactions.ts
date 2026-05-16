@@ -178,19 +178,29 @@ export class Interactions extends BaseInteractions {}
 function addOutputProperties(interaction: Interaction): Interaction {
   const steps = interaction.steps ?? [];
 
-  let firstTrailing = steps.length;
-  while (firstTrailing > 0 && steps[firstTrailing - 1]!.type === 'model_output') {
-    firstTrailing--;
-  }
-  const modelSteps = steps.slice(firstTrailing) as ModelOutputStep[];
-
-  const output = modelSteps.flatMap((step) => step.content ?? []);
-
+  // output_text: scan backwards across all steps (stopping at user_input),
+  // skip non-text content until the first text item is found, then collect
+  // text until a non-text barrier is hit.
   const textParts: string[] = [];
-  for (let i = output.length - 1; i >= 0; i--) {
-    const content = output[i]!;
-    if (content.type !== 'text') break;
-    textParts.push(content.text ?? '');
+  let collecting = false;
+  outer: for (let i = steps.length - 1; i >= 0; i--) {
+    const step = steps[i]!;
+    if (step.type === 'user_input') break;
+    if (step.type !== 'model_output' || !step.content) {
+      if (collecting) break outer;
+      continue;
+    }
+    const content = step.content;
+    for (let j = content.length - 1; j >= 0; j--) {
+      const item = content[j]!;
+      if (item.type === 'text') {
+        collecting = true;
+        textParts.push(item.text ?? '');
+      } else if (collecting) {
+        // Hit a non-text barrier after we started collecting.
+        break outer;
+      }
+    }
   }
   const output_text = textParts.reverse().join('');
 
